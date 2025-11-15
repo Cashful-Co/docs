@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Mint Starter Kit",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#1825e8",
+    "light": "#1825e8",
+    "dark": "#1825e8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -57,12 +57,27 @@
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Health Check Endpoint",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoint/api/v0/health/get"
+            ]
+          },
+          {
+            "group": "Checkout Sessions Endpoint",
+            "pages": [
+              "api-reference/endpoint/api/v0/checkout-sessions/post"
+            ]
+          },
+          {
+            "group": "Balance Endpoint",
+            "pages": [
+              "api-reference/endpoint/api/v0/balance/get"
+            ]
+          },
+          {
+            "group": "Auth Endpoint",
+            "pages": [
+              "api-reference/endpoint/api/v0/auth/sign-in/post"
             ]
           }
         ]
