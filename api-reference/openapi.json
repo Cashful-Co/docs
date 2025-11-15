@@ -1,217 +1,2492 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.0.0",
   "paths": {
-    "/plants": {
+    "/api/v0/health": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "description": "Performs a health check on the application and external dependencies",
+        "operationId": "HealthController_check",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Application and all dependencies are healthy",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "example": {
+                    "status": "ok",
+                    "details": {
+                      "nestjs-docs": {
+                        "status": "up"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "One or more health checks failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "error": {
+                      "nestjs-docs": {
+                        "status": "down",
+                        "message": "Service unavailable"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Health check endpoint",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v0/checkout/sessions": {
+      "post": {
+        "description": "Creates a hosted payment page. Used for: (1) A standard e-commerce purchase, or (2) a \"Pay-In\" to fund a CustomerBalance.",
+        "operationId": "CheckoutController_createCheckoutSession",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Checkout session created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "checkout_sess_123",
+                    "merchantId": "merchant_456",
+                    "customerId": "customer_789",
+                    "sessionUrl": "https://checkout.cashful.co/session/checkout_sess_123",
+                    "successUrl": "https://example.com/success",
+                    "cancelUrl": "https://example.com/cancel",
+                    "lineItems": [
+                      {
+                        "productId": "product_001",
+                        "quantity": 2,
+                        "amount": 5000,
+                        "currency": "ZAR"
+                      }
+                    ],
+                    "totalAmount": 10000,
+                    "currency": "ZAR",
+                    "mode": "payment",
+                    "status": "active",
+                    "expiresAt": "2025-01-17T10:30:00Z",
+                    "createdAt": "2025-01-15T10:30:00Z"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Hosted Checkout",
+        "tags": [
+          "Checkouts"
+        ]
+      }
+    },
+    "/api/v0/balance": {
+      "get": {
+        "description": "Retrieves the merchant's own master balance (their earnings) available for payouts.",
+        "operationId": "BalanceController_getMerchantBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved merchant balance",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "example": {
+                    "id": "balance_123",
+                    "merchantId": "merchant_456",
+                    "amount": 50000,
+                    "currency": "ZAR",
+                    "available": 50000,
+                    "pending": 0,
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
           }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get Merchant Balance",
+        "tags": [
+          "Balance"
+        ]
+      }
+    },
+    "/api/v0/balance/history": {
+      "get": {
+        "description": "A full ledger of all transactions, fees, and payouts for the merchant's master account.",
+        "operationId": "BalanceController_getBalanceHistory",
+        "parameters": [
+          {
+            "name": "transactionType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by transaction type (e.g., \"credit\", \"debit\", \"fee\", \"payout\")",
+            "schema": {
+              "type": "string"
             }
           },
-          "required": true
-        },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter transactions until this date (ISO 8601 format)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter transactions from this date (ISO 8601 format)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of records to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of records to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "Successfully retrieved balance history",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "example": {
+                    "data": [
+                      {
+                        "id": "txn_001",
+                        "merchantId": "merchant_456",
+                        "type": "credit",
+                        "amount": 1000,
+                        "currency": "ZAR",
+                        "description": "Checkout session completed",
+                        "relatedEntityId": "checkout_789",
+                        "relatedEntityType": "CheckoutSession",
+                        "balanceAfter": 50000,
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      },
+                      {
+                        "id": "txn_002",
+                        "merchantId": "merchant_456",
+                        "type": "fee",
+                        "amount": -50,
+                        "currency": "ZAR",
+                        "description": "Platform fee",
+                        "relatedEntityId": "checkout_789",
+                        "relatedEntityType": "CheckoutSession",
+                        "balanceAfter": 49950,
+                        "createdAt": "2025-01-15T10:30:05Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 150,
+                      "hasMore": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Merchant Balance History",
+        "tags": [
+          "Balance"
+        ]
+      }
+    },
+    "/api/v0/customers": {
+      "post": {
+        "description": "Creates a new customer object. This also provisions their \"cash balance\" feature (starting at 0).",
+        "operationId": "CustomersController_createCustomer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Customer created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "customer_789",
+                    "merchantId": "merchant_456",
+                    "email": "john@example.com",
+                    "name": "John Doe",
+                    "metadata": {
+                      "userId": "user_123",
+                      "tier": "premium"
+                    },
+                    "cashBalance": {
+                      "id": "balance_001",
+                      "amount": 0,
+                      "currency": "ZAR"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "409": {
+            "description": "Customer with this email already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Customer",
+        "tags": [
+          "Customers"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a paginated list of all customers for the merchant.",
+        "operationId": "CustomersController_listCustomers",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search customers by name or email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Filter customers by email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of customers to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of customers to return (default: 50, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customers list",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "example": {
+                    "data": [
+                      {
+                        "id": "customer_789",
+                        "merchantId": "merchant_456",
+                        "email": "john@example.com",
+                        "name": "John Doe",
+                        "metadata": {
+                          "userId": "user_123",
+                          "tier": "premium"
+                        },
+                        "cashBalance": {
+                          "id": "balance_001",
+                          "amount": 5000,
+                          "currency": "ZAR"
+                        },
+                        "createdAt": "2025-01-15T10:30:00Z",
+                        "updatedAt": "2025-01-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 150,
+                      "hasMore": true
+                    }
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Customers",
+        "tags": [
+          "Customers"
+        ]
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/api/v0/customers/{id}": {
+      "get": {
+        "description": "Gets the details for a single customer.",
+        "operationId": "CustomersController_retrieveCustomer",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
+            "in": "path",
+            "description": "The unique identifier of the customer",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "customer_789",
+                    "merchantId": "merchant_456",
+                    "email": "john@example.com",
+                    "name": "John Doe",
+                    "metadata": {
+                      "userId": "user_123",
+                      "tier": "premium"
+                    },
+                    "cashBalance": {
+                      "id": "balance_001",
+                      "amount": 5000,
+                      "currency": "ZAR"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Customer not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Retrieve Customer",
+        "tags": [
+          "Customers"
+        ]
+      },
+      "patch": {
+        "description": "Updates a customer's details (e.g., email, metadata).",
+        "operationId": "CustomersController_updateCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the customer",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "customer_789",
+                    "merchantId": "merchant_456",
+                    "email": "john.updated@example.com",
+                    "name": "John Doe Updated",
+                    "metadata": {
+                      "userId": "user_123",
+                      "tier": "gold"
+                    },
+                    "cashBalance": {
+                      "id": "balance_001",
+                      "amount": 5000,
+                      "currency": "ZAR"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T11:45:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Customer not found"
+          },
+          "409": {
+            "description": "Email already in use by another customer"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update Customer",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v0/customers/{id}/balance": {
+      "get": {
+        "description": "Retrieves the real-time balance for a single customer's \"cash balance\" (the \"wallet-enabling\" feature).",
+        "operationId": "CustomersController_getCustomerBalance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the customer",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer's cash balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "balance_001",
+                    "customerId": "customer_789",
+                    "merchantId": "merchant_456",
+                    "amount": 5000,
+                    "currency": "ZAR",
+                    "available": 5000,
+                    "pending": 0,
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T11:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Customer not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get Customer's Cash Balance",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v0/customers/{id}/transactions": {
+      "get": {
+        "description": "Provides the full transaction history for a single customer's \"cash balance\" (Pay-Ins, Purchases, Transfers).",
+        "operationId": "CustomersController_listCustomerTransactions",
+        "parameters": [
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter transactions until this date (ISO 8601 format)",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter transactions from this date (ISO 8601 format)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by transaction type (e.g., \"pay_in\", \"purchase\", \"transfer\")",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of transactions to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of transactions to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the customer",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "txn_001",
+                        "customerId": "customer_789",
+                        "type": "pay_in",
+                        "amount": 2000,
+                        "currency": "ZAR",
+                        "description": "Funded via checkout session",
+                        "relatedEntityId": "checkout_sess_123",
+                        "relatedEntityType": "CheckoutSession",
+                        "balanceAfter": 5000,
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      },
+                      {
+                        "id": "txn_002",
+                        "customerId": "customer_789",
+                        "type": "purchase",
+                        "amount": -500,
+                        "currency": "ZAR",
+                        "description": "Purchased airtime",
+                        "relatedEntityId": "purchase_001",
+                        "relatedEntityType": "Purchase",
+                        "balanceAfter": 4500,
+                        "createdAt": "2025-01-15T11:00:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 25,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Customer not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Customer's Cash Transactions",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v0/customers/{id}/payment-methods": {
+      "get": {
+        "description": "Shows all saved payment methods (cards, etc.) for a single customer.",
+        "operationId": "CustomersController_listCustomerPaymentMethods",
+        "parameters": [
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of payment methods to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of payment methods to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the customer",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved customer's payment methods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "pm_001",
+                        "customerId": "customer_789",
+                        "type": "card",
+                        "brand": "visa",
+                        "last4": "4242",
+                        "expiryMonth": 12,
+                        "expiryYear": 2025,
+                        "isDefault": true,
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      },
+                      {
+                        "id": "pm_002",
+                        "customerId": "customer_789",
+                        "type": "card",
+                        "brand": "mastercard",
+                        "last4": "5555",
+                        "expiryMonth": 6,
+                        "expiryYear": 2026,
+                        "isDefault": false,
+                        "createdAt": "2025-01-14T15:20:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 2,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Customer not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Customer's Payment Methods",
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/v0/events": {
+      "get": {
+        "description": "Retrieves a log of all API events for debugging and logging.",
+        "operationId": "EventsController_listEvents",
+        "parameters": [
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter events until this date (ISO 8601 format)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter events from this date (ISO 8601 format)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by event type (e.g., \"checkout.session.completed\", \"purchase.succeeded\")",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of events to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of events to return (default: 50)",
+            "schema": {
+              "type": "number"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Successfully retrieved events",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "example": {
+                    "data": [
+                      {
+                        "id": "event_001",
+                        "merchantId": "merchant_456",
+                        "type": "checkout.session.completed",
+                        "data": {
+                          "sessionId": "checkout_sess_123",
+                          "amount": 10000,
+                          "currency": "ZAR"
+                        },
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      },
+                      {
+                        "id": "event_002",
+                        "merchantId": "merchant_456",
+                        "type": "purchase.succeeded",
+                        "data": {
+                          "purchaseId": "purchase_001",
+                          "amount": 50,
+                          "currency": "ZAR"
+                        },
+                        "createdAt": "2025-01-15T10:35:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 500,
+                      "hasMore": true
+                    }
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Events",
+        "tags": [
+          "Events"
+        ]
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    },
+    "/api/v0/payment-intents": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "description": "Server-to-server API to charge a saved card. Used for subscriptions or recurring billing (a core gateway feature).",
+        "operationId": "PaymentIntentsController_createPaymentIntent",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Payment intent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "pi_001",
+                    "merchantId": "merchant_456",
+                    "customerId": "customer_789",
+                    "paymentMethodId": "pm_001",
+                    "amount": 5000,
+                    "currency": "ZAR",
+                    "description": "Subscription payment",
+                    "status": "processing",
+                    "metadata": {
+                      "subscriptionId": "sub_123"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "402": {
+            "description": "Payment declined"
+          },
+          "404": {
+            "description": "Customer or payment method not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Off-Session Charge",
+        "tags": [
+          "Payment Intents"
+        ]
+      }
+    },
+    "/api/v0/payment-intents/{id}": {
+      "get": {
+        "description": "Checks the status of a specific server-to-server charge.",
+        "operationId": "PaymentIntentsController_retrievePaymentIntent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the payment intent",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved payment intent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "pi_001",
+                    "merchantId": "merchant_456",
+                    "customerId": "customer_789",
+                    "paymentMethodId": "pm_001",
+                    "amount": 5000,
+                    "currency": "ZAR",
+                    "description": "Subscription payment",
+                    "status": "succeeded",
+                    "failureReason": null,
+                    "receiptUrl": "https://receipts.cashful.co/pi_001",
+                    "metadata": {
+                      "subscriptionId": "sub_123"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:05Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Payment intent not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Retrieve Payment Intent",
+        "tags": [
+          "Payment Intents"
+        ]
+      }
+    },
+    "/api/v0/payment-links": {
+      "post": {
+        "description": "Creates a re-usable hosted link. Can be used for: (1) Selling a product, or (2) as a \"Pay-In\" link for a customer.",
+        "operationId": "PaymentLinksController_createPaymentLink",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Payment link created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "plink_001",
+                    "merchantId": "merchant_456",
+                    "url": "https://pay.cashful.co/link/plink_001",
+                    "lineItems": [
+                      {
+                        "productId": "product_001",
+                        "quantity": 1,
+                        "amount": 15000,
+                        "currency": "ZAR"
+                      }
+                    ],
+                    "totalAmount": 15000,
+                    "currency": "ZAR",
+                    "mode": "payment",
+                    "active": true,
+                    "expiresAt": "2025-04-15T10:30:00Z",
+                    "redirectUrl": "https://example.com/success",
+                    "metadata": {
+                      "campaign": "summer_sale"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Payment Link",
+        "tags": [
+          "Payment Links"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all payment links created by the merchant.",
+        "operationId": "PaymentLinksController_listPaymentLinks",
+        "parameters": [
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of payment links to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of payment links to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved payment links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "plink_001",
+                        "merchantId": "merchant_456",
+                        "url": "https://pay.cashful.co/link/plink_001",
+                        "lineItems": [
+                          {
+                            "productId": "product_001",
+                            "quantity": 1,
+                            "amount": 15000,
+                            "currency": "ZAR"
+                          }
+                        ],
+                        "totalAmount": 15000,
+                        "currency": "ZAR",
+                        "mode": "payment",
+                        "active": true,
+                        "expiresAt": "2025-04-15T10:30:00Z",
+                        "redirectUrl": "https://example.com/success",
+                        "metadata": {
+                          "campaign": "summer_sale"
+                        },
+                        "createdAt": "2025-01-15T10:30:00Z",
+                        "updatedAt": "2025-01-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 15,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Payment Links",
+        "tags": [
+          "Payment Links"
+        ]
+      }
+    },
+    "/api/v0/payment-links/{id}": {
+      "patch": {
+        "description": "Updates a link's details, most commonly to set active: false.",
+        "operationId": "PaymentLinksController_updatePaymentLink",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the payment link",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment link updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "plink_001",
+                    "merchantId": "merchant_456",
+                    "url": "https://pay.cashful.co/link/plink_001",
+                    "lineItems": [
+                      {
+                        "productId": "product_001",
+                        "quantity": 1,
+                        "amount": 15000,
+                        "currency": "ZAR"
+                      }
+                    ],
+                    "totalAmount": 15000,
+                    "currency": "ZAR",
+                    "mode": "payment",
+                    "active": false,
+                    "expiresAt": "2025-04-15T10:30:00Z",
+                    "redirectUrl": "https://example.com/success",
+                    "metadata": {
+                      "campaign": "summer_sale"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T11:45:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Payment link not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update Payment Link",
+        "tags": [
+          "Payment Links"
+        ]
+      }
+    },
+    "/api/v0/payment-methods/{id}": {
+      "get": {
+        "description": "Gets the non-sensitive details of a saved card (e.g., brand, last 4).",
+        "operationId": "PaymentMethodsController_retrievePaymentMethod",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the payment method",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved payment method details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "pm_001",
+                    "customerId": "customer_789",
+                    "type": "card",
+                    "brand": "visa",
+                    "last4": "4242",
+                    "expiryMonth": 12,
+                    "expiryYear": 2025,
+                    "holderName": "John Doe",
+                    "isDefault": true,
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Payment method not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Retrieve Payment Method",
+        "tags": [
+          "Payment Methods"
+        ]
+      },
+      "delete": {
+        "description": "Detaches and deletes a saved payment method from a customer.",
+        "operationId": "PaymentMethodsController_deletePaymentMethod",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the payment method",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment method successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "pm_001",
+                    "deleted": true,
+                    "deletedAt": "2025-01-15T11:45:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Payment method not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete Payment Method",
+        "tags": [
+          "Payment Methods"
+        ]
+      }
+    },
+    "/api/v0/products": {
+      "post": {
+        "description": "Defines a product in the merchant's catalog (e.g., \"Airtime,\" \"Data\").",
+        "operationId": "ProductsController_createProduct",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "product_001",
+                    "merchantId": "merchant_456",
+                    "name": "Airtime",
+                    "description": "Mobile phone airtime",
+                    "amount": 50,
+                    "currency": "ZAR",
+                    "active": true,
+                    "metadata": {
+                      "category": "telecom"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Product",
+        "tags": [
+          "Products"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all products in the merchant's catalog.",
+        "operationId": "ProductsController_listProducts",
+        "parameters": [
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of products to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of products to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "product_001",
+                        "merchantId": "merchant_456",
+                        "name": "Airtime",
+                        "description": "Mobile phone airtime",
+                        "amount": 50,
+                        "currency": "ZAR",
+                        "active": true,
+                        "metadata": {
+                          "category": "telecom"
+                        },
+                        "createdAt": "2025-01-15T10:30:00Z",
+                        "updatedAt": "2025-01-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 25,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Products",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/api/v0/products/{id}": {
+      "patch": {
+        "description": "Updates a product's name, description, or metadata.",
+        "operationId": "ProductsController_updateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the product",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "product_001",
+                    "merchantId": "merchant_456",
+                    "name": "Airtime Updated",
+                    "description": "Mobile phone airtime - updated",
+                    "amount": 50,
+                    "currency": "ZAR",
+                    "active": true,
+                    "metadata": {
+                      "category": "telecom"
+                    },
+                    "createdAt": "2025-01-15T10:30:00Z",
+                    "updatedAt": "2025-01-15T11:45:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/api/v0/payouts": {
+      "post": {
+        "description": "Allows the merchant to move funds from their MerchantBalance (their earnings) to their external bank account.",
+        "operationId": "PayoutsController_createPayout",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Payout created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "payout_001",
+                    "merchantId": "merchant_456",
+                    "amount": 10000,
+                    "currency": "ZAR",
+                    "status": "pending",
+                    "bankAccount": {
+                      "bankName": "Example Bank",
+                      "accountNumber": "****5678",
+                      "accountHolder": "Merchant Name"
+                    },
+                    "estimatedArrivalDate": "2025-01-17T00:00:00Z",
+                    "createdAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "402": {
+            "description": "Insufficient merchant balance"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Payout",
+        "tags": [
+          "Payouts"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a list of all historical and pending payouts for the merchant.",
+        "operationId": "PayoutsController_listPayouts",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payout status (e.g., \"pending\", \"completed\", \"failed\")",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of payouts to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of payouts to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved payouts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "payout_001",
+                        "merchantId": "merchant_456",
+                        "amount": 10000,
+                        "currency": "ZAR",
+                        "status": "completed",
+                        "bankAccount": {
+                          "bankName": "Example Bank",
+                          "accountNumber": "****5678",
+                          "accountHolder": "Merchant Name"
+                        },
+                        "estimatedArrivalDate": "2025-01-17T00:00:00Z",
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 8,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Payouts",
+        "tags": [
+          "Payouts"
+        ]
+      }
+    },
+    "/api/v0/transfers": {
+      "post": {
+        "description": "(Wallet-Enabling) Moves funds from one CustomerBalance to another CustomerBalance. This is the P2P feature.",
+        "operationId": "TransfersController_createTransfer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Transfer created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "transfer_001",
+                    "merchantId": "merchant_456",
+                    "fromCustomerId": "customer_001",
+                    "toCustomerId": "customer_002",
+                    "amount": 1000,
+                    "currency": "ZAR",
+                    "status": "completed",
+                    "description": "Payment for services",
+                    "fromCustomerBalanceBefore": 5000,
+                    "fromCustomerBalanceAfter": 4000,
+                    "toCustomerBalanceBefore": 2000,
+                    "toCustomerBalanceAfter": 3000,
+                    "createdAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "402": {
+            "description": "Insufficient sender balance"
+          },
+          "404": {
+            "description": "Sender or recipient customer not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create P2P Transfer",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v0/purchases": {
+      "post": {
+        "description": "(Wallet-Enabling) Spends a product using the CustomerBalance as the source. Atomically debits the CustomerBalance and credits the MerchantBalance.",
+        "operationId": "PurchasesController_createPurchase",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Purchase created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "purchase_001",
+                    "merchantId": "merchant_456",
+                    "customerId": "customer_789",
+                    "productId": "product_001",
+                    "quantity": 1,
+                    "amount": 50,
+                    "currency": "ZAR",
+                    "status": "completed",
+                    "customerBalanceBefore": 5000,
+                    "customerBalanceAfter": 4950,
+                    "createdAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "402": {
+            "description": "Insufficient customer balance"
+          },
+          "404": {
+            "description": "Customer or product not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buy with Cash Balance",
+        "tags": [
+          "Purchases"
+        ]
+      }
+    },
+    "/api/v0/webhook-endpoints": {
+      "post": {
+        "description": "Registers a URL to receive real-time events (e.g., checkout.session.completed, purchase.succeeded).",
+        "operationId": "WebhooksController_createWebhookEndpoint",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Webhook endpoint created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "webhook_001",
+                    "merchantId": "merchant_456",
+                    "url": "https://example.com/webhooks",
+                    "events": [
+                      "checkout.session.completed",
+                      "purchase.succeeded",
+                      "transfer.completed"
+                    ],
+                    "active": true,
+                    "secret": "whsec_***",
+                    "createdAt": "2025-01-15T10:30:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create Webhook Endpoint",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "get": {
+        "description": "Lists all configured webhook endpoints.",
+        "operationId": "WebhooksController_listWebhookEndpoints",
+        "parameters": [
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of endpoints to skip (default: 0)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of endpoints to return (default: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved webhook endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "webhook_001",
+                        "merchantId": "merchant_456",
+                        "url": "https://example.com/webhooks",
+                        "events": [
+                          "checkout.session.completed",
+                          "purchase.succeeded",
+                          "transfer.completed"
+                        ],
+                        "active": true,
+                        "secret": "whsec_***",
+                        "createdAt": "2025-01-15T10:30:00Z"
+                      }
+                    ],
+                    "pagination": {
+                      "limit": 50,
+                      "offset": 0,
+                      "total": 3,
+                      "hasMore": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Webhook Endpoints",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/api/v0/webhook-endpoints/{id}": {
+      "delete": {
+        "description": "Stops sending events to a specific URL.",
+        "operationId": "WebhooksController_deleteWebhookEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the webhook endpoint",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "webhook_001",
+                    "deleted": true,
+                    "deletedAt": "2025-01-15T11:45:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Webhook endpoint not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete Webhook Endpoint",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/api/v0/auth/sign-up": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign up a new user",
+        "description": "Register a new user with email and password",
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "callbackURL": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "User successfully created and signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object"
+                    },
+                    "session": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid registration data"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/sign-in": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign in a user",
+        "description": "Authenticate a user with email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "rememberMe": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "callbackURL": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object"
+                    },
+                    "session": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/sign-out": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign out the current user",
+        "description": "End the current user session",
+        "responses": {
+          "200": {
+            "description": "User successfully signed out"
+          },
+          "401": {
+            "description": "User not authenticated"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/session": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current session",
+        "description": "Retrieve the current user session data",
+        "responses": {
+          "200": {
+            "description": "Current session data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object"
+                    },
+                    "session": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No active session"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Change password",
+        "description": "Change the current user's password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                },
+                "required": [
+                  "oldPassword",
+                  "newPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully changed"
+          },
+          "401": {
+            "description": "Invalid old password or user not authenticated"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/forget-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Request password reset",
+        "description": "Send a password reset email to the user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "redirectURL": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent"
+          },
+          "400": {
+            "description": "Invalid email"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset password with token",
+        "description": "Reset user password using a valid reset token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                },
+                "required": [
+                  "token",
+                  "newPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully reset"
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/update-user": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update user profile",
+        "description": "Update the current user's profile information",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "emailVerified": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile successfully updated"
+          },
+          "401": {
+            "description": "User not authenticated"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/verify-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify email address",
+        "description": "Verify a user's email address using a verification token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email successfully verified"
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/list-sessions": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "List all user sessions",
+        "description": "Get all active sessions for the current user",
+        "responses": {
+          "200": {
+            "description": "List of user sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated"
+          }
+        }
+      }
+    },
+    "/api/v0/auth/revoke-session": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Revoke a specific session",
+        "description": "End a specific user session by ID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session successfully revoked"
+          },
+          "401": {
+            "description": "User not authenticated"
           }
         }
       }
     }
   },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
+  "info": {
+    "title": "Cashful API",
+    "description": "Cashful API documentation for developers integrating with the Cashful platform.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Support",
+      "url": "https://cashful.co",
+      "email": "support@cashful.co"
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     }
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints (Better Auth)"
+    },
+    {
+      "name": "Checkouts",
+      "description": "Checkout session endpoints"
+    },
+    {
+      "name": "Customers",
+      "description": "Customer management endpoints"
+    },
+    {
+      "name": "Payment Methods",
+      "description": "Payment methods management endpoints"
+    },
+    {
+      "name": "Payment Intents",
+      "description": "Payment intents management endpoints"
+    },
+    {
+      "name": "Payment Links",
+      "description": "Payment links management endpoints"
+    },
+    {
+      "name": "Products",
+      "description": "Product management endpoints"
+    },
+    {
+      "name": "Purchases",
+      "description": "Purchase management endpoints"
+    },
+    {
+      "name": "Payouts",
+      "description": "Payout management endpoints"
+    },
+    {
+      "name": "Transfers",
+      "description": "Transfer management endpoints"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Webhook handling endpoints"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3002",
+      "description": "Local development"
+    },
+    {
+      "url": "http://localhost:3002",
+      "description": "Production"
+    }
+  ],
+  "components": {
+    "schemas": {}
   }
 }
