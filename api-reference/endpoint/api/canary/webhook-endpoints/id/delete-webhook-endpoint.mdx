@@ -1,0 +1,56 @@
+---
+title: "Delete Webhook Endpoint"
+sidebarTitle: "Delete Webhook Endpoint"
+description: "Stops sending events to a specific webhook URL"
+api: "delete /api/canary/webhook-endpoints/{id}"
+---
+
+Stops sending events to a specific URL.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the webhook endpoint
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="id" type="string">
+    Unique identifier of the deleted endpoint
+  </ResponseField>
+  <ResponseField name="deleted" type="boolean">
+    Confirmation that the endpoint was deleted
+  </ResponseField>
+  <ResponseField name="deletedAt" type="string">
+    ISO 8601 timestamp when the endpoint was deleted
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "id": "webhook_001",
+  "deleted": true,
+  "deletedAt": "2025-12-02T07:20:24.326Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Webhook endpoint not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

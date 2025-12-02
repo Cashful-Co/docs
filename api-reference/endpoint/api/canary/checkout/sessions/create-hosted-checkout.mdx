@@ -1,0 +1,154 @@
+---
+title: "Create Hosted Checkout"
+sidebarTitle: "Create Hosted Checkout"
+description: "Creates a hosted payment page for e-commerce purchases or customer balance funding"
+api: "post /api/canary/checkout/sessions"
+---
+
+Creates a hosted payment page. This endpoint is used for:
+1. Standard e-commerce purchases
+2. "Pay-In" transactions to fund a customer's balance
+
+## Request Body
+
+<ParamField body="customerId" type="string" required>
+  The unique identifier of the customer making the purchase
+</ParamField>
+
+<ParamField body="lineItems" type="array of objects" required>
+  Array of items in the checkout session
+  <Expandable title="LineItem Object">
+    <ParamField body="productId" type="string" required>
+      The unique identifier of the product
+    </ParamField>
+    <ParamField body="quantity" type="number" required>
+      The quantity of the product
+    </ParamField>
+    <ParamField body="amount" type="number" required>
+      The price per unit in the specified currency
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  The currency code (e.g., "ZAR")
+</ParamField>
+
+<ParamField body="mode" type="string" required>
+  The checkout mode (e.g., "payment")
+</ParamField>
+
+<ParamField body="successUrl" type="string" required>
+  The URL to redirect to after a successful payment
+</ParamField>
+
+<ParamField body="cancelUrl" type="string" required>
+  The URL to redirect to if the customer cancels the payment
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Custom metadata to attach to the checkout session
+</ParamField>
+
+## Response
+
+<ResponseField status="201" name="Checkout Session Created">
+  <ResponseField name="id" type="string">
+    Unique identifier for the checkout session
+  </ResponseField>
+  <ResponseField name="merchantId" type="string">
+    The merchant's unique identifier
+  </ResponseField>
+  <ResponseField name="customerId" type="string">
+    The customer's unique identifier
+  </ResponseField>
+  <ResponseField name="sessionUrl" type="string">
+    The hosted checkout page URL
+  </ResponseField>
+  <ResponseField name="lineItems" type="array">
+    Array of items in the session
+  </ResponseField>
+  <ResponseField name="totalAmount" type="number">
+    Total amount for the checkout session
+  </ResponseField>
+  <ResponseField name="currency" type="string">
+    The currency code
+  </ResponseField>
+  <ResponseField name="status" type="string">
+    Current status of the session (e.g., "active", "completed", "expired")
+  </ResponseField>
+  <ResponseField name="expiresAt" type="string">
+    ISO 8601 timestamp when the session expires
+  </ResponseField>
+  <ResponseField name="createdAt" type="string">
+    ISO 8601 timestamp when the session was created
+  </ResponseField>
+  <ResponseField name="updatedAt" type="string">
+    ISO 8601 timestamp when the session was last updated
+  </ResponseField>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "customerId": "customer_789",
+  "lineItems": [
+    {
+      "productId": "product_001",
+      "quantity": 2,
+      "amount": 5000
+    }
+  ],
+  "currency": "ZAR",
+  "mode": "payment",
+  "successUrl": "https://example.com/success",
+  "cancelUrl": "https://example.com/cancel"
+}
+```
+
+## Example Response
+
+```json
+{
+  "id": "checkout_sess_123",
+  "merchantId": "merchant_456",
+  "customerId": "customer_789",
+  "sessionUrl": "https://checkout.cashful.africa/session/checkout_sess_123",
+  "successUrl": "https://example.com/success",
+  "cancelUrl": "https://example.com/cancel",
+  "lineItems": [
+    {
+      "productId": "product_001",
+      "quantity": 2,
+      "amount": 5000,
+      "currency": "ZAR"
+    }
+  ],
+  "totalAmount": 10000,
+  "currency": "ZAR",
+  "mode": "payment",
+  "status": "active",
+  "expiresAt": "2025-01-17T10:30:00.000Z",
+  "createdAt": "2025-01-15T10:30:00.000Z",
+  "updatedAt": "2025-01-15T10:30:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="400" name="Bad Request">
+  Invalid request body or missing required fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

@@ -1,0 +1,80 @@
+---
+title: "Retrieve Payment Method"
+sidebarTitle: "Retrieve Payment Method"
+description: "Gets the non-sensitive details of a saved card"
+api: "get /api/canary/payment-methods/{id}"
+---
+
+Gets the non-sensitive details of a saved card (e.g., brand, last 4).
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the payment method
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="id" type="string">
+    Unique identifier for the payment method
+  </ResponseField>
+  <ResponseField name="customerId" type="string">
+    The customer's unique identifier
+  </ResponseField>
+  <ResponseField name="type" type="string">
+    Payment method type (e.g., "card")
+  </ResponseField>
+  <ResponseField name="brand" type="string">
+    Card brand (e.g., "visa", "mastercard")
+  </ResponseField>
+  <ResponseField name="last4" type="string">
+    Last 4 digits of the card
+  </ResponseField>
+  <ResponseField name="expiryMonth" type="number">
+    Card expiry month
+  </ResponseField>
+  <ResponseField name="expiryYear" type="number">
+    Card expiry year
+  </ResponseField>
+  <ResponseField name="isDefault" type="boolean">
+    Whether this is the default payment method
+  </ResponseField>
+  <ResponseField name="createdAt" type="string">
+    ISO 8601 timestamp when the payment method was created
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "id": "pm_001",
+  "customerId": "customer_789",
+  "type": "card",
+  "brand": "visa",
+  "last4": "4242",
+  "expiryMonth": 12,
+  "expiryYear": 2025,
+  "isDefault": true,
+  "createdAt": "2025-01-15T10:30:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Payment method not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

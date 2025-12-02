@@ -1,0 +1,56 @@
+---
+title: "Delete Payment Method"
+sidebarTitle: "Delete Payment Method"
+description: "Detaches and deletes a saved payment method from a customer"
+api: "delete /api/canary/payment-methods/{id}"
+---
+
+Detaches and deletes a saved payment method from a customer.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the payment method
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="id" type="string">
+    Unique identifier for the deleted payment method
+  </ResponseField>
+  <ResponseField name="deleted" type="boolean">
+    Confirmation that the payment method was deleted
+  </ResponseField>
+  <ResponseField name="deletedAt" type="string">
+    ISO 8601 timestamp when the payment method was deleted
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "id": "pm_001",
+  "deleted": true,
+  "deletedAt": "2025-01-15T10:30:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Payment method not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

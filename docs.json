@@ -11,31 +11,117 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
-        "groups": [
-        ]
-      },
-      {
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Getting started",
             "pages": [
-              "api-reference/introduction"
+              "/api-reference/introduction"
             ]
           },
           {
-            "group": "Health Check Endpoint",
+            "group": "Health",
+            "icon": "heart",
+            "openapi": "/api-reference/openapi.json",
             "pages": [
-              "api-reference/endpoint/api/canary/health/get"
+              "/api-reference/endpoint/api/canary/health/health-check"
+            ]
+          },
+          {
+            "group": "Balance",
+            "icon": "wallet",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/balance/get-merchant-balance"
+            ]
+          },
+          {
+            "group": "Checkout",
+            "icon": "credit-card",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/checkout/sessions/create-hosted-checkout"
+            ]
+          },
+          {
+            "group": "Customers",
+            "icon": "users",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/customers/list-customers",
+              "/api-reference/endpoint/api/canary/customers/create-customer",
+              "/api-reference/endpoint/api/canary/customers/id/retrieve-customer",
+              "/api-reference/endpoint/api/canary/customers/id/update-customer",
+              "/api-reference/endpoint/api/canary/customers/id/balance/get-customer-cash-balance",
+              "/api-reference/endpoint/api/canary/customers/id/payment-methods/list-customer-payment-methods",
+              "/api-reference/endpoint/api/canary/customers/id/transactions/list-customer-transactions"
+            ]
+          },
+          {
+            "group": "Events",
+            "icon": "bell",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/events/list-events"
+            ]
+          },
+          {
+            "group": "Payment Intents",
+            "icon": "zap",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/payment-intents/create-off-session-charge",
+              "/api-reference/endpoint/api/canary/payment-intents/id/retrieve-payment-intent"
+            ]
+          },
+          {
+            "group": "Payment Methods",
+            "icon": "credit-card",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/payment-methods/id/retrieve-payment-method",
+              "/api-reference/endpoint/api/canary/payment-methods/id/delete-payment-method"
+            ]
+          },
+          {
+            "group": "Products",
+            "icon": "box",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/products/list-products",
+              "/api-reference/endpoint/api/canary/products/create-product",
+              "/api-reference/endpoint/api/canary/products/id/update-product"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "webhook",
+            "openapi": "/api-reference/openapi.json",
+            "pages": [
+              "/api-reference/endpoint/api/canary/webhook-endpoints/list-webhook-endpoints",
+              "/api-reference/endpoint/api/canary/webhook-endpoints/create-webhook-endpoint",
+              "/api-reference/endpoint/api/canary/webhook-endpoints/id/delete-webhook-endpoint"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-      ]
+      "anchors": []
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "Trade Gothic",
+      "source": "/fonts/Trade-Gothic/Trade-Gothic-Std-Extended.otf",
+      "format": "woff2",
+      "weight": 700
+    },
+    "body": {
+      "family": "Aeonik",
+      "source": "/fonts/Aeonik/Aeonik-Regular.otf",
+      "format": "woff2",
+      "weight": 400
     }
   },
   "logo": {
@@ -46,7 +132,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:contact@cashful.africa"
+        "href": "mailto:support@cashful.africa"
       }
     ],
     "primary": {
@@ -57,9 +143,25 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view"
-   ]
+      "copy",
+      "view"
+    ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive",
+      "proxy": true
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "node"
+      ],
+      "defaults": "required",
+      "prefill": true
+    }
   },
   "footer": {
     "socials": {

@@ -1,0 +1,107 @@
+---
+title: "Create Webhook Endpoint"
+sidebarTitle: "Create Webhook Endpoint"
+description: "Registers a URL to receive real-time events"
+api: "post /api/canary/webhook-endpoints"
+---
+
+Registers a URL to receive real-time events (e.g., checkout.session.completed, purchase.succeeded).
+
+## Request Body
+
+<ParamField body="url" type="string" required>
+  The webhook endpoint URL where events will be sent
+</ParamField>
+
+<ParamField body="events" type="array of strings" required>
+  Array of event types to subscribe to (e.g., ["checkout.session.completed", "payment.succeeded"])
+</ParamField>
+
+<ParamField body="active" type="boolean">
+  Whether the webhook endpoint is active (default: true)
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Custom metadata to attach to the webhook endpoint
+</ParamField>
+
+## Response
+
+<ResponseField status="201" name="Webhook Endpoint Created">
+  <ResponseField name="id" type="string">
+    Unique identifier for the webhook endpoint
+  </ResponseField>
+  <ResponseField name="merchantId" type="string">
+    The merchant's unique identifier
+  </ResponseField>
+  <ResponseField name="url" type="string">
+    The webhook endpoint URL
+  </ResponseField>
+  <ResponseField name="events" type="array">
+    Array of subscribed event types
+  </ResponseField>
+  <ResponseField name="active" type="boolean">
+    Whether the endpoint is active
+  </ResponseField>
+  <ResponseField name="metadata" type="object">
+    Custom metadata
+  </ResponseField>
+  <ResponseField name="createdAt" type="string">
+    ISO 8601 timestamp when the endpoint was created
+  </ResponseField>
+  <ResponseField name="updatedAt" type="string">
+    ISO 8601 timestamp when the endpoint was last updated
+  </ResponseField>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "url": "https://example.com/webhooks",
+  "events": [
+    "checkout.session.completed",
+    "purchase.succeeded",
+    "transfer.completed"
+  ],
+  "active": true,
+  "metadata": {}
+}
+```
+
+## Example Response
+
+```json
+{
+  "id": "webhook_001",
+  "merchantId": "merchant_456",
+  "url": "https://example.com/webhooks",
+  "events": [
+    "checkout.session.completed",
+    "purchase.succeeded",
+    "transfer.completed"
+  ],
+  "active": true,
+  "metadata": {},
+  "createdAt": "2025-01-15T10:30:00.000Z",
+  "updatedAt": "2025-01-15T10:30:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="400" name="Bad Request">
+  Invalid request body
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

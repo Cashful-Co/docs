@@ -77,7 +77,7 @@
                   "id": "checkout_sess_123",
                   "merchantId": "merchant_456",
                   "customerId": "customer_789",
-                  "sessionUrl": "https://checkout.cashful.co/session/checkout_sess_123",
+                  "sessionUrl": "https://checkout.cashful.africa/session/checkout_sess_123",
                   "successUrl": "https://example.com/success",
                   "cancelUrl": "https://example.com/cancel",
                   "lineItems": [
@@ -10930,22 +10930,29 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "authenticatorAttachment",
+            "in": "query",
+            "description": "Type of authenticator to use for registration.\n                          \"platform\" for device-specific authenticators,\n                          \"cross-platform\" for authenticators that can be used across devices.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Optional custom name for the passkey.\n                          This can help identify the passkey when managing multiple credentials.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
-            "parameters": {
-              "query": {
-                "authenticatorAttachment": {
-                  "description": "Type of authenticator to use for registration.\n                          \"platform\" for device-specific authenticators,\n                          \"cross-platform\" for authenticators that can be used across devices.",
-                  "required": false
-                },
-                "name": {
-                  "description": "Optional custom name for the passkey.\n                          This can help identify the passkey when managing multiple credentials.",
-                  "required": false
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -13808,8 +13815,7 @@
                     "description": "The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided. Eg: \"org-slug\"",
                     "nullable": true
                   }
-                },
-                "required": []
+                }
               }
             }
           }
@@ -13820,8 +13826,6 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "description": "The organization",
                   "$ref": "#/components/schemas/Organization"
                 }
               }
@@ -17161,18 +17165,14 @@
     "version": "1.0.0",
     "contact": {
       "name": "Support",
-      "url": "https://cashful.co",
-      "email": "support@cashful.co"
+      "url": "https://cashful.africa",
+      "email": "support@cashful.africa"
     }
   },
   "tags": [],
   "servers": [
     {
-      "url": "http://localhost:3002",
-      "description": "Local"
-    },
-    {
-      "url": "http://localhost:3002",
+      "url": "https://api.cashful.africa",
       "description": "Production"
     }
   ],
@@ -18625,8 +18625,7 @@
           "metadata": {
             "type": "string"
           }
-        },
-        "required": []
+        }
       },
       "Organization": {
         "type": "object",

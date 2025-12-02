@@ -1,11 +1,70 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Getting started with the Cashful API for payments, customers, and financial operations'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Welcome to the Cashful API
 
-## Welcome
+Cashful provides a comprehensive payment and financial management API designed to simplify payment processing, customer management, and financial operations for businesses.
+
+## Core Features
+
+**Payment Processing**
+- Create and manage payment intents for both hosted and off-session transactions
+- Support for multiple payment methods
+- Secure checkout sessions with hosted payment forms
+- Real-time payment status tracking
+
+**Customer Management**
+- Create and manage customer profiles
+- Track customer balances and transaction history
+- Manage multiple payment methods per customer
+- Access customer-specific payment data
+
+**Financial Insights**
+- Monitor merchant and customer cash balances
+- Access detailed balance history and transaction records
+- Real-time balance queries
+- Comprehensive financial reporting capabilities
+
+**Webhooks & Events**
+- Real-time event notifications
+- Webhook endpoint management
+- Track payment status changes and customer events
+- Reliable event delivery for integration automation
+
+**Product Management**
+- Create and manage product catalogs
+- Update product information
+- Organize offerings for seamless checkout experiences
+
+## Getting Started
+
+To use the Cashful API:
+
+1. **Authentication**: All API requests require authentication via API keys
+2. **Base URL**: Requests should be sent to `https://api.cashful.africa/api/canary`
+3. **Response Format**: All responses are returned in JSON format
+4. **Status Codes**: Standard HTTP status codes indicate request success or failure
+
+## Error Handling
+
+The API uses standard HTTP status codes and returns detailed error messages in JSON format to help you diagnose issues quickly.
+
+## API Reference Structure
+
+Explore the full API reference organized by resource:
+
+- **Health**: System status and health checks
+- **Balance**: Merchant and customer balance operations
+- **Checkout**: Hosted checkout session management
+- **Customers**: Customer profile and data management
+- **Events**: Event logging and tracking
+- **Payment Intents**: Payment creation and retrieval
+- **Payment Methods**: Payment method management
+- **Products**: Product catalog management
+- **Webhooks**: Event notification endpoints
+
+## Support
+
+For technical support, questions, or issues, reach out to us at [support@cashful.africa](mailto:support@cashful.africa).

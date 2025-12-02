@@ -1,0 +1,130 @@
+---
+title: "Update Product"
+sidebarTitle: "Update Product"
+description: "Updates a product's name, description, or metadata"
+api: "patch /api/canary/products/{id}"
+---
+
+Updates a product's name, description, or metadata.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the product
+</ParamField>
+
+## Request Body
+
+<ParamField body="name" type="string">
+  The product name
+</ParamField>
+
+<ParamField body="description" type="string">
+  A description of the product
+</ParamField>
+
+<ParamField body="amount" type="number">
+  The product price
+</ParamField>
+
+<ParamField body="active" type="boolean">
+  Whether the product is active
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Custom metadata for the product
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="id" type="string">
+    Unique identifier for the product
+  </ResponseField>
+  <ResponseField name="merchantId" type="string">
+    The merchant's unique identifier
+  </ResponseField>
+  <ResponseField name="name" type="string">
+    The product name
+  </ResponseField>
+  <ResponseField name="description" type="string">
+    Product description
+  </ResponseField>
+  <ResponseField name="amount" type="number">
+    Product price
+  </ResponseField>
+  <ResponseField name="currency" type="string">
+    Currency code
+  </ResponseField>
+  <ResponseField name="active" type="boolean">
+    Whether the product is active
+  </ResponseField>
+  <ResponseField name="metadata" type="object">
+    Custom metadata
+  </ResponseField>
+  <ResponseField name="createdAt" type="string">
+    ISO 8601 timestamp when the product was created
+  </ResponseField>
+  <ResponseField name="updatedAt" type="string">
+    ISO 8601 timestamp when the product was last updated
+  </ResponseField>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "name": "Airtime",
+  "description": "Mobile phone airtime - Updated",
+  "amount": 5000,
+  "active": true,
+  "metadata": {
+    "category": "telecom",
+    "provider": "vodacom",
+    "updated": true
+  }
+}
+```
+
+## Example Response
+
+```json
+{
+  "id": "product_001",
+  "merchantId": "merchant_456",
+  "name": "Airtime",
+  "description": "Mobile phone airtime - Updated",
+  "amount": 5000,
+  "currency": "ZAR",
+  "active": true,
+  "metadata": {
+    "category": "telecom",
+    "provider": "vodacom",
+    "updated": true
+  },
+  "createdAt": "2025-01-15T10:30:00.000Z",
+  "updatedAt": "2025-01-15T11:00:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="400" name="Bad Request">
+  Invalid request body
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Product not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

@@ -1,0 +1,133 @@
+---
+title: "Create Off-Session Charge"
+sidebarTitle: "Create Off-Session Charge"
+description: "Server-to-server API to charge a saved card for subscriptions or recurring billing"
+api: "post /api/canary/payment-intents"
+---
+
+Server-to-server API to charge a saved card. Used for subscriptions or recurring billing (a core gateway feature).
+
+## Request Body
+
+<ParamField body="customerId" type="string" required>
+  The unique identifier of the customer to charge
+</ParamField>
+
+<ParamField body="paymentMethodId" type="string" required>
+  The unique identifier of the saved payment method (card) to use
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  The amount to charge in the smallest currency unit
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  The currency code (e.g., "ZAR")
+</ParamField>
+
+<ParamField body="description" type="string">
+  A description of the charge (e.g., "Subscription payment")
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Custom metadata to attach to the payment intent (e.g., subscription ID)
+</ParamField>
+
+## Response
+
+<ResponseField status="201" name="Payment Intent Created">
+  <ResponseField name="id" type="string">
+    Unique identifier for the payment intent
+  </ResponseField>
+  <ResponseField name="merchantId" type="string">
+    The merchant's unique identifier
+  </ResponseField>
+  <ResponseField name="customerId" type="string">
+    The customer's unique identifier
+  </ResponseField>
+  <ResponseField name="paymentMethodId" type="string">
+    The payment method's unique identifier
+  </ResponseField>
+  <ResponseField name="amount" type="number">
+    The charge amount
+  </ResponseField>
+  <ResponseField name="currency" type="string">
+    The currency code
+  </ResponseField>
+  <ResponseField name="description" type="string">
+    Description of the charge
+  </ResponseField>
+  <ResponseField name="status" type="string">
+    Payment status (processing, succeeded, failed)
+  </ResponseField>
+  <ResponseField name="metadata" type="object">
+    Custom metadata attached to the payment intent
+  </ResponseField>
+  <ResponseField name="createdAt" type="string">
+    ISO 8601 timestamp when the intent was created
+  </ResponseField>
+  <ResponseField name="updatedAt" type="string">
+    ISO 8601 timestamp when the intent was last updated
+  </ResponseField>
+</ResponseField>
+
+## Example Request
+
+```json
+{
+  "customerId": "customer_789",
+  "paymentMethodId": "pm_001",
+  "amount": 5000,
+  "currency": "ZAR",
+  "description": "Subscription payment",
+  "metadata": {
+    "subscriptionId": "sub_123"
+  }
+}
+```
+
+## Example Response
+
+```json
+{
+  "id": "pi_001",
+  "merchantId": "merchant_456",
+  "customerId": "customer_789",
+  "paymentMethodId": "pm_001",
+  "amount": 5000,
+  "currency": "ZAR",
+  "description": "Subscription payment",
+  "status": "processing",
+  "metadata": {
+    "subscriptionId": "sub_123"
+  },
+  "createdAt": "2025-01-15T10:30:00.000Z",
+  "updatedAt": "2025-01-15T10:30:00.000Z"
+}
+```
+
+## Error Responses
+
+<ResponseField status="400" name="Bad Request">
+  Invalid request body
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="402" name="Payment Required">
+  Payment declined
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Customer or payment method not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

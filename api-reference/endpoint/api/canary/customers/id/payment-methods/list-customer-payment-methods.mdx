@@ -1,0 +1,130 @@
+---
+title: "List Customer's Payment Methods"
+sidebarTitle: "List Customer's Payment Methods"
+description: "Shows all saved payment methods (cards, etc.) for a customer"
+api: "get /api/canary/customers/{id}/payment-methods"
+---
+
+Shows all saved payment methods (cards, etc.) for a single customer.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the customer
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="offset" type="number">
+  Number of payment methods to skip (default: 0)
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of payment methods to return (default: 50)
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="data" type="array">
+    Array of payment methods
+    <Expandable title="Payment Method Object">
+      <ResponseField name="id" type="string">
+        Unique identifier for the payment method
+      </ResponseField>
+      <ResponseField name="customerId" type="string">
+        The customer's unique identifier
+      </ResponseField>
+      <ResponseField name="type" type="string">
+        Payment method type (e.g., "card")
+      </ResponseField>
+      <ResponseField name="brand" type="string">
+        Card brand (e.g., "visa", "mastercard")
+      </ResponseField>
+      <ResponseField name="last4" type="string">
+        Last 4 digits of the card
+      </ResponseField>
+      <ResponseField name="expiryMonth" type="number">
+        Card expiry month
+      </ResponseField>
+      <ResponseField name="expiryYear" type="number">
+        Card expiry year
+      </ResponseField>
+      <ResponseField name="holderName" type="string">
+        Cardholder name
+      </ResponseField>
+      <ResponseField name="isDefault" type="boolean">
+        Whether this is the default payment method
+      </ResponseField>
+      <ResponseField name="createdAt" type="string">
+        ISO 8601 timestamp when the payment method was created
+      </ResponseField>
+      <ResponseField name="updatedAt" type="string">
+        ISO 8601 timestamp when the payment method was last updated
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+  <ResponseField name="pagination" type="object">
+    Pagination information
+    <Expandable title="Pagination">
+      <ResponseField name="limit" type="number">
+        Number of records returned
+      </ResponseField>
+      <ResponseField name="offset" type="number">
+        Number of records skipped
+      </ResponseField>
+      <ResponseField name="total" type="number">
+        Total number of records available
+      </ResponseField>
+      <ResponseField name="hasMore" type="boolean">
+        Whether more records are available
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "pm_001",
+      "customerId": "customer_789",
+      "type": "card",
+      "brand": "visa",
+      "last4": "4242",
+      "expiryMonth": 12,
+      "expiryYear": 2025,
+      "holderName": "John Doe",
+      "isDefault": true,
+      "createdAt": "2025-01-15T10:30:00.000Z",
+      "updatedAt": "2025-01-15T10:30:00.000Z"
+    }
+  ],
+  "pagination": {
+    "limit": 50,
+    "offset": 0,
+    "total": 1,
+    "hasMore": false
+  }
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Customer not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

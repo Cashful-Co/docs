@@ -1,0 +1,128 @@
+---
+title: "Get Balance History"
+sidebarTitle: "Get Balance History"
+description: "Retrieves the full ledger of transactions, fees, and payouts for the merchant"
+api: "get /api/canary/balance/history"
+---
+
+A full ledger of all transactions, fees, and payouts for the merchant's master account.
+
+## Query Parameters
+
+<ParamField query="transactionType" type="string">
+  Filter by transaction type (e.g., "credit", "debit", "fee", "payout")
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Filter transactions from this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  Filter transactions until this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="offset" type="number">
+  Number of records to skip (default: 0)
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of records to return (default: 50)
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="data" type="array">
+    Array of balance history transactions
+    <Expandable title="Transaction Object">
+      <ResponseField name="id" type="string">
+        Unique identifier for the transaction
+      </ResponseField>
+      <ResponseField name="merchantId" type="string">
+        The merchant's unique identifier
+      </ResponseField>
+      <ResponseField name="type" type="string">
+        Transaction type (credit, debit, fee, payout)
+      </ResponseField>
+      <ResponseField name="amount" type="number">
+        Transaction amount
+      </ResponseField>
+      <ResponseField name="currency" type="string">
+        The currency code
+      </ResponseField>
+      <ResponseField name="description" type="string">
+        Description of the transaction
+      </ResponseField>
+      <ResponseField name="relatedEntityId" type="string">
+        ID of the related entity (e.g., checkout session)
+      </ResponseField>
+      <ResponseField name="relatedEntityType" type="string">
+        Type of related entity (e.g., CheckoutSession)
+      </ResponseField>
+      <ResponseField name="balanceAfter" type="number">
+        Balance amount after this transaction
+      </ResponseField>
+      <ResponseField name="createdAt" type="string">
+        ISO 8601 timestamp when the transaction occurred
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+  <ResponseField name="pagination" type="object">
+    Pagination information
+    <Expandable title="Pagination">
+      <ResponseField name="limit" type="number">
+        Number of records returned
+      </ResponseField>
+      <ResponseField name="offset" type="number">
+        Number of records skipped
+      </ResponseField>
+      <ResponseField name="total" type="number">
+        Total number of records available
+      </ResponseField>
+      <ResponseField name="hasMore" type="boolean">
+        Whether more records are available
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "txn_001",
+      "merchantId": "merchant_456",
+      "type": "credit",
+      "amount": 10000,
+      "currency": "ZAR",
+      "description": "Checkout session completed",
+      "relatedEntityId": "checkout_789",
+      "relatedEntityType": "CheckoutSession",
+      "balanceAfter": 50000,
+      "createdAt": "2025-01-15T10:30:00.000Z"
+    }
+  ],
+  "pagination": {
+    "limit": 50,
+    "offset": 0,
+    "total": 150,
+    "hasMore": true
+  }
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

@@ -1,0 +1,83 @@
+---
+title: "Health Check"
+description: "Performs a health check on the application and external dependencies"
+api: "GET /api/canary/health"
+---
+
+Performs a health check on the application and external dependencies.
+
+## Response
+
+<ResponseField status="200" name="Healthy">
+  <ResponseField name="status" type="string">
+    Status of the system (e.g., "ok")
+  </ResponseField>
+  <ResponseField name="details" type="object">
+    Details about individual dependency health
+    <Expandable title="Details Object">
+      <ResponseField name="nestjs-docs" type="object">
+        Status of the NestJS documentation service
+        <Expandable title="Service Status">
+          <ResponseField name="status" type="string">
+            Status of the service (e.g., "up", "down")
+          </ResponseField>
+        </Expandable>
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+</ResponseField>
+
+## Example Response (Healthy)
+
+```json
+{
+  "status": "ok",
+  "details": {
+    "nestjs-docs": {
+      "status": "up"
+    }
+  }
+}
+```
+
+## Example Response (Unhealthy)
+
+```json
+{
+  "status": "error",
+  "error": {
+    "nestjs-docs": {
+      "status": "down",
+      "message": "Service unavailable"
+    }
+  }
+}
+```
+
+## Error Responses
+
+<ResponseField status="503" name="Service Unavailable">
+  One or more health checks failed. The application or its dependencies are not healthy.
+</ResponseField>
+
+## Authentication
+
+This endpoint does not require authentication and can be called by any client.
+
+## Use Cases
+
+<Card title="Monitoring" icon="chart-line">
+  Monitor application health and uptime
+</Card>
+
+<Card title="Dependency Checks" icon="server">
+  Verify all external services are operational
+</Card>
+
+<Card title="Readiness Probes" icon="check-circle">
+  Use in Kubernetes or container orchestration readiness probes
+</Card>
+
+<Card title="Uptime Monitoring" icon="clock">
+  Integrate with external monitoring services
+</Card>

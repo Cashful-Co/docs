@@ -1,0 +1,137 @@
+---
+title: "List Products"
+sidebarTitle: "List Products"
+description: "Retrieves a paginated list of all products in the merchant's catalog"
+api: "get /api/canary/products"
+---
+
+Retrieves all products in the merchant's catalog.
+
+## Query Parameters
+
+<ParamField query="active" type="boolean">
+  Filter by active status (true or false)
+</ParamField>
+
+<ParamField query="offset" type="number">
+  Number of products to skip (default: 0)
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of products to return (default: 50)
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="data" type="array">
+    Array of products
+    <Expandable title="Product Object">
+      <ResponseField name="id" type="string">
+        Unique identifier for the product
+      </ResponseField>
+      <ResponseField name="merchantId" type="string">
+        The merchant's unique identifier
+      </ResponseField>
+      <ResponseField name="name" type="string">
+        The product name
+      </ResponseField>
+      <ResponseField name="description" type="string">
+        Product description
+      </ResponseField>
+      <ResponseField name="amount" type="number">
+        Product price
+      </ResponseField>
+      <ResponseField name="currency" type="string">
+        Currency code
+      </ResponseField>
+      <ResponseField name="active" type="boolean">
+        Whether the product is active
+      </ResponseField>
+      <ResponseField name="metadata" type="object">
+        Custom metadata
+      </ResponseField>
+      <ResponseField name="createdAt" type="string">
+        ISO 8601 timestamp when the product was created
+      </ResponseField>
+      <ResponseField name="updatedAt" type="string">
+        ISO 8601 timestamp when the product was last updated
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+  <ResponseField name="pagination" type="object">
+    Pagination information
+    <Expandable title="Pagination">
+      <ResponseField name="limit" type="number">
+        Number of records returned
+      </ResponseField>
+      <ResponseField name="offset" type="number">
+        Number of records skipped
+      </ResponseField>
+      <ResponseField name="total" type="number">
+        Total number of records available
+      </ResponseField>
+      <ResponseField name="hasMore" type="boolean">
+        Whether more records are available
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "product_001",
+      "merchantId": "merchant_456",
+      "name": "Airtime",
+      "description": "Mobile phone airtime",
+      "amount": 5000,
+      "currency": "ZAR",
+      "active": true,
+      "metadata": {
+        "category": "telecom"
+      },
+      "createdAt": "2025-01-15T10:30:00.000Z",
+      "updatedAt": "2025-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "product_002",
+      "merchantId": "merchant_456",
+      "name": "Data Bundle",
+      "description": "1GB data bundle",
+      "amount": 10000,
+      "currency": "ZAR",
+      "active": true,
+      "metadata": {
+        "category": "telecom",
+        "size": "1GB"
+      },
+      "createdAt": "2025-01-14T09:20:00.000Z",
+      "updatedAt": "2025-01-14T09:20:00.000Z"
+    }
+  ],
+  "pagination": {
+    "limit": 50,
+    "offset": 0,
+    "total": 25,
+    "hasMore": false
+  }
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

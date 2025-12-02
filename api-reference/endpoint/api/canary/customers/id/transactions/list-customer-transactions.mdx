@@ -1,0 +1,155 @@
+---
+title: "List Customer's Cash Transactions"
+sidebarTitle: "List Customer's Cash Transactions"
+description: "Retrieves the full transaction history for a customer's cash balance"
+api: "get /api/canary/customers/{id}/transactions"
+---
+
+Provides the full transaction history for a single customer's "cash balance" (Pay-Ins, Purchases, Transfers).
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the customer
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="startDate" type="string">
+  Filter transactions from this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  Filter transactions until this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="transactionType" type="string">
+  Filter by transaction type (e.g., "pay_in", "purchase", "transfer", "credit", "debit")
+</ParamField>
+
+<ParamField query="offset" type="number">
+  Number of transactions to skip (default: 0)
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of transactions to return (default: 50)
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Success">
+  <ResponseField name="data" type="array">
+    Array of transactions
+    <Expandable title="Transaction Object">
+      <ResponseField name="id" type="string">
+        Unique identifier for the transaction
+      </ResponseField>
+      <ResponseField name="customerId" type="string">
+        The customer's unique identifier
+      </ResponseField>
+      <ResponseField name="type" type="string">
+        Transaction type (credit, debit, purchase, pay_in, transfer)
+      </ResponseField>
+      <ResponseField name="amount" type="number">
+        Transaction amount
+      </ResponseField>
+      <ResponseField name="currency" type="string">
+        The currency code
+      </ResponseField>
+      <ResponseField name="description" type="string">
+        Description of the transaction
+      </ResponseField>
+      <ResponseField name="relatedEntityId" type="string">
+        ID of the related entity (e.g., checkout session, purchase)
+      </ResponseField>
+      <ResponseField name="relatedEntityType" type="string">
+        Type of related entity (e.g., CheckoutSession, Purchase)
+      </ResponseField>
+      <ResponseField name="balanceAfter" type="number">
+        Customer's balance after this transaction
+      </ResponseField>
+      <ResponseField name="createdAt" type="string">
+        ISO 8601 timestamp when the transaction occurred
+      </ResponseField>
+      <ResponseField name="updatedAt" type="string">
+        ISO 8601 timestamp when the transaction was last updated
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+  <ResponseField name="pagination" type="object">
+    Pagination information
+    <Expandable title="Pagination">
+      <ResponseField name="limit" type="number">
+        Number of records returned
+      </ResponseField>
+      <ResponseField name="offset" type="number">
+        Number of records skipped
+      </ResponseField>
+      <ResponseField name="total" type="number">
+        Total number of records available
+      </ResponseField>
+      <ResponseField name="hasMore" type="boolean">
+        Whether more records are available
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+</ResponseField>
+
+## Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "txn_001",
+      "customerId": "customer_789",
+      "type": "credit",
+      "amount": 1000,
+      "currency": "ZAR",
+      "description": "Checkout session completed",
+      "relatedEntityId": "checkout_sess_123",
+      "relatedEntityType": "CheckoutSession",
+      "balanceAfter": 5000,
+      "createdAt": "2025-01-15T10:30:00.000Z",
+      "updatedAt": "2025-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "txn_002",
+      "customerId": "customer_789",
+      "type": "purchase",
+      "amount": -50,
+      "currency": "ZAR",
+      "description": "Purchase of Airtime",
+      "relatedEntityId": "purchase_001",
+      "relatedEntityType": "Purchase",
+      "balanceAfter": 4950,
+      "createdAt": "2025-01-15T11:00:00.000Z",
+      "updatedAt": "2025-01-15T11:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "limit": 50,
+    "offset": 0,
+    "total": 25,
+    "hasMore": false
+  }
+}
+```
+
+## Error Responses
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Customer not found
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.
