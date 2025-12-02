@@ -1,50 +1,18 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Cashful API Documentation",
   "colors": {
     "primary": "#1825e8",
     "light": "#1825e8",
     "dark": "#1825e8"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
         "tab": "Guides",
         "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
-          }
         ]
       },
       {
@@ -59,25 +27,7 @@
           {
             "group": "Health Check Endpoint",
             "pages": [
-              "api-reference/endpoint/api/v0/health/get"
-            ]
-          },
-          {
-            "group": "Checkout Sessions Endpoint",
-            "pages": [
-              "api-reference/endpoint/api/v0/checkout-sessions/post"
-            ]
-          },
-          {
-            "group": "Balance Endpoint",
-            "pages": [
-              "api-reference/endpoint/api/v0/balance/get"
-            ]
-          },
-          {
-            "group": "Auth Endpoint",
-            "pages": [
-              "api-reference/endpoint/api/v0/auth/sign-in/post"
+              "api-reference/endpoint/api/canary/health/get"
             ]
           }
         ]
@@ -85,21 +35,6 @@
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
       ]
     }
   },
@@ -111,32 +46,25 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:contact@cashful.africa"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.cashful.africa"
     }
   },
   "contextual": {
     "options": [
      "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
+     "view"
    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/cashful-co",
+      "linkedin": "https://www.linkedin.com/company/cashful"
     }
   }
 }
