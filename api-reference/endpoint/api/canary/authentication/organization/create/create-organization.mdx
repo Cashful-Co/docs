@@ -2,32 +2,5 @@
 title: "Create Organization"
 sidebarTitle: "Create Organization"
 description: "Create a new organization"
-api: "post /api/canary/authentication/organization/create"
+openapi: /openapi.json POST /api/canary/authentication/organization/create
 ---
-
-Create a new organization and associate it with the authenticated user.
-
-## Request Body
-
-<ParamField body="name" type="string" required>
-  Organization name
-</ParamField>
-
-<ParamField body="metadata" type="object">
-  Optional metadata for the organization
-</ParamField>
-
-## Responses
-
-<ResponseField status="201" name="Organization created successfully">
-  <ResponseField name="organizationId" type="string">Created organization's id</ResponseField>
-  <ResponseField name="name" type="string">Organization name</ResponseField>
-</ResponseField>
-
-<ResponseField status="400" name="Bad Request">
-  Invalid input or missing fields
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

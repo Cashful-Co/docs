@@ -2,28 +2,5 @@
 title: "List Payouts"
 sidebarTitle: "List Payouts"
 description: "Retrieves a list of historic and pending payouts"
-api: "get /api/canary/payouts"
+openapi: /openapi.json GET /api/canary/payouts
 ---
-
-Retrieve all historical and pending payouts for the merchant.
-
-## Query Parameters
-
-<ParamField query="page" type="number">
-  Page number
-</ParamField>
-
-<ParamField query="limit" type="number">
-  Records per page
-</ParamField>
-
-## Response
-
-<ResponseField status="200" name="List Payouts">
-  <ResponseField name="data" type="array">Array of payout objects</ResponseField>
-  <ResponseField name="pagination" type="object">Pagination data</ResponseField>
-</ResponseField>
-
-## Authentication
-
-This endpoint requires Bearer token authentication.

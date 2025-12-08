@@ -2,21 +2,5 @@
 title: "Sign out"
 sidebarTitle: "Sign out"
 description: "Sign out the current user and invalidate the session"
-api: "post /api/canary/authentication/sign-out"
+openapi: /openapi.json POST /api/canary/authentication/sign-out
 ---
-
-Invalidate the current user's session and tokens. Requires authentication.
-
-## Responses
-
-<ResponseField status="200" name="User signed out successfully">
-  Sign out confirmation
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

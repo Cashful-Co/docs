@@ -2,22 +2,5 @@
 title: "List Organizations"
 sidebarTitle: "List Organizations"
 description: "List all organizations for the current user"
-api: "get /api/canary/authentication/organization/list"
+openapi: /openapi.json GET /api/canary/authentication/organization/list
 ---
-
-List organizations associated with the authenticated user.
-
-## Responses
-
-<ResponseField status="200" name="Organizations listed successfully">
-  <ResponseField name="data" type="array">List of organization objects</ResponseField>
-  <ResponseField name="pagination" type="object">Pagination metadata (if applicable)</ResponseField>
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

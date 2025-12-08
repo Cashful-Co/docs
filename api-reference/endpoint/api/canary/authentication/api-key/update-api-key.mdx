@@ -2,45 +2,5 @@
 title: "Update API Key"
 sidebarTitle: "Update API Key"
 description: "Update an API key's properties"
-api: "post /api/canary/authentication/api-key/update"
+openapi: /openapi.json POST /api/canary/authentication/api-key/update
 ---
-
-Update an existing API key's metadata or name.
-
-## Request Body
-
-<ParamField body="keyId" type="string" required>
-  The ID of the API key to update
-</ParamField>
-
-<ParamField body="name" type="string">
-  Updated human-friendly name
-</ParamField>
-
-<ParamField body="expiresIn" type="number">
-  Updated expiration in seconds
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="API key updated successfully">
-  <ResponseField name="id" type="string">ID of the updated key</ResponseField>
-  <ResponseField name="name" type="string">Name of the key</ResponseField>
-  <ResponseField name="expiresAt" type="string">ISO 8601 expiration timestamp (if set)</ResponseField>
-</ResponseField>
-
-<ResponseField status="400" name="Bad Request">
-  Invalid input or validation error
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Invalid or missing authentication token
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred on the server
-</ResponseField>
-
-## Authentication
-
-This endpoint requires Bearer token authentication.

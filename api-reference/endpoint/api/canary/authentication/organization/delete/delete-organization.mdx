@@ -2,27 +2,5 @@
 title: "Delete Organization"
 sidebarTitle: "Delete Organization"
 description: "Delete an organization"
-api: "post /api/canary/authentication/organization/delete"
+openapi: /openapi.json POST /api/canary/authentication/organization/delete
 ---
-
-Permanently delete an organization. Requires authentication and appropriate permissions.
-
-## Request Body
-
-<ParamField body="organizationId" type="string" required>
-  The ID of the organization to delete
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="Organization deleted successfully">
-  Confirmation of deletion
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

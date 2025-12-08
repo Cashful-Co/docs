@@ -2,27 +2,5 @@
 title: "Set Active Organization"
 sidebarTitle: "Set Active Organization"
 description: "Set the active organization for the current session"
-api: "post /api/canary/authentication/organization/set-active"
+openapi: /openapi.json POST /api/canary/authentication/organization/set-active
 ---
-
-Set the active organization for the current user session.
-
-## Request Body
-
-<ParamField body="organizationId" type="string" required>
-  The ID of the organization to set as active
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="Active organization set successfully">
-  Confirmation of active organization change
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

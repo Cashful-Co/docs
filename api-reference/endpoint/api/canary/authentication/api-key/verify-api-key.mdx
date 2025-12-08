@@ -2,30 +2,5 @@
 title: "Verify API Key"
 sidebarTitle: "Verify API Key"
 description: "Verify an API key to check validity and metadata"
-api: "post /api/canary/authentication/api-key/verify"
+openapi: /openapi.json POST /api/canary/authentication/api-key/verify
 ---
-
-Verify an API key to ensure it is valid and active.
-
-## Request Body
-
-<ParamField body="key" type="string" required>
-  The full API key string to verify
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="API key verified successfully">
-  <ResponseField name="id" type="string">The ID of the key</ResponseField>
-  <ResponseField name="name" type="string">The key name</ResponseField>
-  <ResponseField name="expiresAt" type="string">Expiration timestamp (if any)</ResponseField>
-  <ResponseField name="active" type="boolean">Whether the key is active</ResponseField>
-</ResponseField>
-
-<ResponseField status="400" name="Bad Request">
-  Invalid input or validation error
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred on the server
-</ResponseField>

@@ -2,39 +2,5 @@
 title: "Update Member Role"
 sidebarTitle: "Update Member Role"
 description: "Update a member's role in an organization"
-api: "post /api/canary/authentication/organization/update-member-role"
+openapi: /openapi.json POST /api/canary/authentication/organization/update-member-role
 ---
-
-Change the role of an existing organization member.
-
-## Request Body
-
-<ParamField body="memberId" type="string" required>
-  The ID of the member to update
-</ParamField>
-
-<ParamField body="organizationId" type="string" required>
-  The ID of the organization
-</ParamField>
-
-<ParamField body="role" type="string" required>
-  New role to assign
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="Member role updated successfully">
-  Updated member object
-</ResponseField>
-
-<ResponseField status="400" name="Bad Request">
-  Invalid input or missing fields
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

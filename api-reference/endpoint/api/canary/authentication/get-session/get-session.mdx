@@ -2,22 +2,5 @@
 title: "Get Session"
 sidebarTitle: "Get Session"
 description: "Retrieve the current user session"
-api: "get /api/canary/authentication/get-session"
+openapi: /openapi.json GET /api/canary/authentication/get-session
 ---
-
-Returns details about the currently authenticated user's session.
-
-## Responses
-
-<ResponseField status="200" name="Session retrieved successfully">
-  <ResponseField name="user" type="object">User details</ResponseField>
-  <ResponseField name="session" type="object">Session details</ResponseField>
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>

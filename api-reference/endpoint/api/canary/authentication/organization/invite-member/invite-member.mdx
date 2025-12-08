@@ -2,35 +2,5 @@
 title: "Invite Member"
 sidebarTitle: "Invite Member"
 description: "Invite a user to an organization"
-api: "post /api/canary/authentication/organization/invite-member"
+openapi: /openapi.json POST /api/canary/authentication/organization/invite-member
 ---
-
-Invite a user to join an organization. Sends an invitation email.
-
-## Request Body
-
-<ParamField body="email" type="string" required>
-  The email address of the user to invite
-</ParamField>
-
-<ParamField body="role" type="string" required>
-  Role to assign to the invited member
-</ParamField>
-
-## Responses
-
-<ResponseField status="200" name="Member invited successfully">
-  Invitation details
-</ResponseField>
-
-<ResponseField status="400" name="Bad Request">
-  Invalid input or missing fields
-</ResponseField>
-
-<ResponseField status="401" name="Unauthorized">
-  Missing or invalid authentication
-</ResponseField>
-
-<ResponseField status="500" name="Internal Server Error">
-  An unexpected error occurred
-</ResponseField>
