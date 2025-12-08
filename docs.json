@@ -15,15 +15,18 @@
         "groups": [
           {
             "group": "Getting Started",
-            "icon": "rocket",
             "pages": [
               "/guides/getting-started/overview",
               "/guides/getting-started/authentication"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Tutorials",
+        "groups": [
           {
-            "group": "Tutorials",
-            "icon": "book-open",
+            "group": "Merchant Quick Start",
             "pages": [
               "/guides/tutorials/merchant-onboarding",
               "/guides/tutorials/create-a-checkout-session",
