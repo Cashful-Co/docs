@@ -1,0 +1,32 @@
+---
+title: "Cancel Invitation"
+sidebarTitle: "Cancel Invitation"
+description: "Cancel an invitation to an organization"
+api: "post /api/canary/authentication/organization/cancel-invitation"
+---
+
+Cancel a previously-sent organization invitation.
+
+## Request Body
+
+<ParamField body="invitationId" type="string" required>
+  The ID of the invitation to cancel
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="Invitation cancelled successfully">
+  Confirmation of cancellation
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Missing or invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>

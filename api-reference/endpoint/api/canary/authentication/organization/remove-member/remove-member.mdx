@@ -1,0 +1,36 @@
+---
+title: "Remove Member"
+sidebarTitle: "Remove Member"
+description: "Remove a member from an organization"
+api: "post /api/canary/authentication/organization/remove-member"
+---
+
+Remove a member from the organization. Requires authentication and permissions.
+
+## Request Body
+
+<ParamField body="memberId" type="string" required>
+  The ID of the member to remove
+</ParamField>
+
+<ParamField body="organizationId" type="string" required>
+  The ID of the organization
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="Member removed successfully">
+  Confirmation of removal
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Missing or invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>

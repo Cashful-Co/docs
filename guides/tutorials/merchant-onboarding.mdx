@@ -1,0 +1,217 @@
+---
+title: Merchant Onboarding
+description: A step-by-step tutorial to sign up, create an organization, add a customer, and process a checkout session using the Cashful API.
+---
+
+import Callout from '../../../snippets/callout' 
+
+# Introduction
+
+This tutorial walks you through a minimal merchant onboarding flow using the external API—registering an account, creating an organization, adding a customer, and initiating a checkout session.
+
+> Note: This tutorial uses examples from the platform's public API. Replace the sample values with your real data.
+
+---
+
+# Prerequisites
+
+- An API client (curl, HTTP client, or a server-side library)
+- Network access to the API endpoints
+- Test card details (4242 4242 4242 4242)
+
+---
+
+# Endpoints used in this tutorial
+
+| Action | HTTP Method | Path |
+|--------|-------------|------|
+| Sign up user | POST | [/authentication/sign-up/email](../../api-reference/endpoint/api/canary/authentication/sign-up/email) |
+| Sign in user | POST | [/authentication/sign-in/email](../../api-reference/endpoint/api/canary/authentication/sign-in/email) |
+| Create organization | POST | [/authentication/organization/create](../../api-reference/endpoint/api/canary/authentication/organization/create) |
+| Set active organization | POST | [/authentication/organization/set-active](../../api-reference/endpoint/api/canary/authentication/organization/set-active) |
+| Create customer | POST | [/customers](../../api-reference/endpoint/api/canary/customers) |
+| Create checkout session | POST | [/checkout/sessions](../../api-reference/endpoint/api/canary/checkout/sessions) |
+# Tutorial Steps
+
+## 1. Sign Up a Merchant (Create User Account)
+
+Create a merchant account using email and password.
+
+```bash
+curl -X POST "https://api.cashful.africa/authentication/sign-up/email" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "merchant@example.com",
+    "password": "securePassword123",
+    "name": "John Doe"
+  }'
+```
+
+Successful response includes the new user details.
+
+---
+
+## 2. Sign In (Get a Session Token)
+
+Sign in to obtain a session token to authenticate future calls.
+
+```bash
+curl -X POST "https://api.cashful.africa/authentication/sign-in/email" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "merchant@example.com",
+    "password": "securePassword123"
+  }'
+```
+
+The response includes a session token in `set-auth-token` header or the response body. Store this token securely and include it in the `Authorization` header for subsequent requests:
+
+```
+Authorization: Bearer {sessionToken}
+```
+
+---
+
+## 3. Create an Organization
+
+Create an organization for the merchant: organizations are the primary scope for payments, balances, and settings.
+
+```bash
+curl -X POST "https://api.cashful.africa/authentication/organization/create" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SESSION_TOKEN}" \
+  -d '{
+    "name": "My Business",
+    "slug": "my-business-123"
+  }'
+```
+
+The response includes the newly created organization's ID, which you'll use in other operations.
+
+---
+
+## 4. Set Active Organization for the Session
+
+Set the organization as active so calls are scoped to it.
+
+```bash
+curl -X POST "https://api.cashful.africa/authentication/organization/set-active" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SESSION_TOKEN}" \
+  -d '{
+    "organizationId": "org_abc123"
+  }'
+```
+
+---
+
+## 5. Create a Customer
+
+Add a customer record in the system so you can process payments on their behalf. Creating a customer is optional — you can create customers ahead of checkout using the `/customers` endpoint, or allow the checkout session to create a customer inline (see examples in the checkout section).
+
+```bash
+curl -X POST "https://api.cashful.africa/customers" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SESSION_TOKEN}" \
+  -d '{
+    "email": "customer@example.com",
+    "name": "Jane Smith",
+    "merchantId": "org_abc123",
+    "metadata": {
+      "source": "web",
+      "signUpDate": "2024-01-15T10:30:00Z"
+    }
+  }'
+```
+
+The response includes the `customer` object with an ID.
+
+---
+
+## 6. Create a Checkout Session
+
+Create a checkout session and redirect the customer to the `sessionUrl` to complete payment.
+
+> Note: Creating a customer record is optional for checkout sessions. You can:
+> - pass an existing `customerId` to attach a customer to the session;
+> - omit `customerId` to create a session without attaching a customer (no customer record will be created); or
+> - include a `customer` object in the session request to create and attach a customer as part of session creation.
+
+```bash
+curl -X POST "https://api.cashful.africa/checkout/sessions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SESSION_TOKEN}" \
+  -d '{
+    "merchantId": "org_abc123",
+    "customerId": "cus_xyz789",
+    "successUrl": "https://yourapp.com/success",
+    "cancelUrl": "https://yourapp.com/cancel",
+    "lineItems": [
+      {
+        "productId": "prod_001",
+        "quantity": 1,
+        "amount": 5000,
+        "currency": "LSL"
+      }
+    ],
+    "totalAmount": 5000,
+    "currency": "LSL",
+    "mode": "payment",
+    "metadata": {
+      "orderId": "order_123"
+    }
+  }'
+```
+
+You will receive a response with `sessionUrl` and `id`. Redirect your user to the returned `sessionUrl` to complete the payment.
+
+### 6.1. Create a checkout session without a pre-created customer
+
+If you don't need to track the customer outside of the checkout flow or prefer to defer creating a customer record, you can omit `customerId`. This will still create a checkout session and allow the payment to proceed, but no `customer` object will be attached to the merchant’s customer list.
+
+```bash
+curl -X POST "https://api.cashful.africa/checkout/sessions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SESSION_TOKEN}" \
+  -d '{
+    "merchantId": "org_abc123",
+    "successUrl": "https://yourapp.com/success",
+    "cancelUrl": "https://yourapp.com/cancel",
+    "lineItems": [
+      { "productId": "prod_001", "quantity": 1, "amount": 5000, "currency": "LSL" }
+    ],
+    "totalAmount": 5000,
+    "currency": "LSL",
+    "mode": "payment"
+  }'
+```
+
+---
+
+## Best Practices and Tips
+
+- **Store tokens securely:** Never expose session tokens in client-side code or logs.
+- **Use webhooks:** Implement webhooks for real-time updates instead of polling the API.
+- **Idempotency:** Use unique identifiers in requests or metadata when re-trying to prevent duplicate charges.
+- **Smallest currency unit:** Always use the smallest unit for amounts (e.g., LSL cents).
+ - **Customer creation options:** If you only need the customer for the checkout flow, you can let the checkout session create a customer inline. Pre-create customers when you need to manage, reuse, or query customer data outside the single checkout flow.
+
+---
+
+## Testing and Sandbox
+
+- Test card: `4242 4242 4242 4242` (any future expiry, any 3 digits for CVC)
+- When developing, use a non-production environment and test API credentials.
+
+---
+
+## Next Steps
+
+- Add webhooks to receive post-checkout payment updates
+- Use `GET /checkout/sessions/{sessionId}` to verify payment status
+- Use the `payment-intents` and `customers` endpoints for server-to-server flows
+
+
+---
+
+If you want a code example in `node` or `python`, or you'd like this tutorial transformed into a getting-started quickstart, I can add a code sample and a downloadable Postman collection.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "willow",
   "name": "Cashful API Documentation",
   "colors": {
     "primary": "#1825e8",
@@ -11,19 +11,64 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API reference",
+        "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
+            "icon": "rocket",
             "pages": [
-              "/api-reference/introduction"
+              "/guides/getting-started/overview",
+              "/guides/getting-started/authentication"
             ]
           },
           {
-            "group": "Health",
-            "icon": "heart",
+            "group": "Tutorials",
+            "icon": "book-open",
             "pages": [
-              "/api-reference/endpoint/api/canary/health/health-check"
+              "/guides/tutorials/merchant-onboarding",
+              "/guides/tutorials/create-a-checkout-session",
+              "/guides/tutorials/manage-customers"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "Authentication",
+            "icon": "lock",
+            "pages": [
+              "/api-reference/endpoint/api/canary/authentication/sign-up/email/sign-up-email",
+              "/api-reference/endpoint/api/canary/authentication/sign-in/email/sign-in-email",
+              "/api-reference/endpoint/api/canary/authentication/sign-out/sign-out",
+              "/api-reference/endpoint/api/canary/authentication/get-session/get-session",
+              "/api-reference/endpoint/api/canary/authentication/forget-password/forget-password",
+              "/api-reference/endpoint/api/canary/authentication/reset-password/reset-password"
+            ]
+          },
+          {
+            "group": "Organisations",
+            "icon": "building",
+            "pages": [
+              "/api-reference/endpoint/api/canary/authentication/organization/create/create-organization",
+              "/api-reference/endpoint/api/canary/authentication/organization/list/list-organizations",
+              "/api-reference/endpoint/api/canary/authentication/organization/set-active/set-active-organization",
+              "/api-reference/endpoint/api/canary/authentication/organization/update/update-organization",
+              "/api-reference/endpoint/api/canary/authentication/organization/delete/delete-organization",
+              "/api-reference/endpoint/api/canary/authentication/organization/remove-member/remove-member",
+              "/api-reference/endpoint/api/canary/authentication/organization/update-member-role/update-member-role"
+            ]
+          },
+          {
+            "group": "API Keys",
+            "icon": "key",
+            "pages": [
+              "/api-reference/endpoint/api/canary/authentication/api-key/create-api-key",
+              "/api-reference/endpoint/api/canary/authentication/api-key/list-api-keys",
+              "/api-reference/endpoint/api/canary/authentication/api-key/update-api-key",
+              "/api-reference/endpoint/api/canary/authentication/api-key/delete-api-key",
+              "/api-reference/endpoint/api/canary/authentication/api-key/verify-api-key"
             ]
           },
           {
@@ -35,37 +80,18 @@
           },
           {
             "group": "Checkout",
-            "icon": "credit-card",
+            "icon": "shopping-cart",
             "pages": [
-              "/api-reference/endpoint/api/canary/checkout/sessions/create-hosted-checkout"
+              "/api-reference/endpoint/api/canary/checkout/sessions/create-checkout-session"
             ]
           },
           {
-            "group": "Customers",
-            "icon": "users",
+            "group": "Payment Links",
+            "icon": "link",
             "pages": [
-              "/api-reference/endpoint/api/canary/customers/list-customers",
-              "/api-reference/endpoint/api/canary/customers/create-customer",
-              "/api-reference/endpoint/api/canary/customers/id/retrieve-customer",
-              "/api-reference/endpoint/api/canary/customers/id/update-customer",
-              "/api-reference/endpoint/api/canary/customers/id/balance/get-customer-cash-balance",
-              "/api-reference/endpoint/api/canary/customers/id/payment-methods/list-customer-payment-methods",
-              "/api-reference/endpoint/api/canary/customers/id/transactions/list-customer-transactions"
-            ]
-          },
-          {
-            "group": "Events",
-            "icon": "bell",
-            "pages": [
-              "/api-reference/endpoint/api/canary/events/list-events"
-            ]
-          },
-          {
-            "group": "Payment Intents",
-            "icon": "zap",
-            "pages": [
-              "/api-reference/endpoint/api/canary/payment-intents/create-off-session-charge",
-              "/api-reference/endpoint/api/canary/payment-intents/id/retrieve-payment-intent"
+              "/api-reference/endpoint/api/canary/payment-links/list-payment-links",
+              "/api-reference/endpoint/api/canary/payment-links/create-payment-link",
+              "/api-reference/endpoint/api/canary/payment-links/id/update-payment-link"
             ]
           },
           {
@@ -83,6 +109,19 @@
               "/api-reference/endpoint/api/canary/products/list-products",
               "/api-reference/endpoint/api/canary/products/create-product",
               "/api-reference/endpoint/api/canary/products/id/update-product"
+            ]
+          },
+          {
+            "group": "Customers",
+            "icon": "users",
+            "pages": [
+              "/api-reference/endpoint/api/canary/customers/list-customers",
+              "/api-reference/endpoint/api/canary/customers/create-customer",
+              "/api-reference/endpoint/api/canary/customers/id/retrieve-customer",
+              "/api-reference/endpoint/api/canary/customers/id/update-customer",
+              "/api-reference/endpoint/api/canary/customers/id/balance/get-customer-cash-balance",
+              "/api-reference/endpoint/api/canary/customers/id/payment-methods/list-customer-payment-methods",
+              "/api-reference/endpoint/api/canary/customers/id/transactions/list-customer-transactions"
             ]
           },
           {
@@ -125,12 +164,7 @@
         "label": "Support",
         "href": "mailto:support@cashful.africa"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.cashful.africa"
-    }
+    ]
   },
   "contextual": {
     "options": [

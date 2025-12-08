@@ -1,0 +1,31 @@
+---
+title: Authentication
+description: How to sign in and obtain a session token for API requests.
+---
+
+# Introduction
+
+All API requests (except sign-up and sign-in) require a session token or an API key.
+
+
+# Session Token Auth
+
+Sign in using `POST /authentication/sign-in/email` to retrieve a session token. Include the token in the `Authorization` header:
+
+```
+Authorization: Bearer {sessionToken}
+```
+
+Tokens may be returned in the response body or in the `set-auth-token` header. Store tokens securely and rotate them as needed.
+
+# API Key Authentication
+
+Another option is to use an API key using the `X-API-Key` header:
+
+```
+X-API-Key: {yourApiKey}
+```
+
+For more information on creating and managing API keys, see the API reference: [API Key Management](../../api-reference/endpoint/api/canary/authentication/api-key/create-api-key)
+
+For more details and a hands-on walkthrough, follow the `Onboard a Merchant` tutorial: [Onboard a Merchant](../tutorials/merchant-onboarding.mdx)

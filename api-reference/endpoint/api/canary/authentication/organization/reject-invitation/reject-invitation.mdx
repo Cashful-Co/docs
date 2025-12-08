@@ -1,0 +1,32 @@
+---
+title: "Reject Invitation"
+sidebarTitle: "Reject Invitation"
+description: "Reject an invitation to an organization"
+api: "post /api/canary/authentication/organization/reject-invitation"
+---
+
+Reject a received invitation to join an organization.
+
+## Request Body
+
+<ParamField body="invitationId" type="string" required>
+  The ID of the invitation to reject
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="Invitation rejected successfully">
+  Confirmation of rejection
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Missing or invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>

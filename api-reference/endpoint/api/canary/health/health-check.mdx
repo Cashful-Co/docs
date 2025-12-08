@@ -9,20 +9,18 @@ Performs a health check on the application and external dependencies.
 ## Response
 
 <ResponseField status="200" name="Healthy">
-  <ResponseField name="status" type="string">
-    Status of the system (e.g., "ok")
+  <ResponseField name="info" type="object">
+    High-level health info about services
+    <Expandable title="Info Object">
+      <ResponseField name="cashful-api" type="object">Service health for the API</ResponseField>
+      <ResponseField name="database" type="object">Service health for the database</ResponseField>
+    </Expandable>
   </ResponseField>
-  <ResponseField name="details" type="object">
-    Details about individual dependency health
+  <ResponseField name="error" type="object">Any errors returned by the health check (empty object when healthy)</ResponseField>
+  <ResponseField name="details" type="object">Detailed status of individual dependencies
     <Expandable title="Details Object">
-      <ResponseField name="nestjs-docs" type="object">
-        Status of the NestJS documentation service
-        <Expandable title="Service Status">
-          <ResponseField name="status" type="string">
-            Status of the service (e.g., "up", "down")
-          </ResponseField>
-        </Expandable>
-      </ResponseField>
+      <ResponseField name="cashful-api" type="object">Status for the API service</ResponseField>
+      <ResponseField name="database" type="object">Status for the database service, may include a message when down</ResponseField>
     </Expandable>
   </ResponseField>
 </ResponseField>
@@ -31,11 +29,14 @@ Performs a health check on the application and external dependencies.
 
 ```json
 {
-  "status": "ok",
+  "info": {
+    "cashful-api": { "status": "up" },
+    "database": { "status": "up" }
+  },
+  "error": {},
   "details": {
-    "nestjs-docs": {
-      "status": "up"
-    }
+    "cashful-api": { "status": "up" },
+    "database": { "status": "up" }
   }
 }
 ```
@@ -44,12 +45,19 @@ Performs a health check on the application and external dependencies.
 
 ```json
 {
-  "status": "error",
+  "info": {
+    "cashful-api": { "status": "up" },
+    "database": { "status": "down" }
+  },
   "error": {
-    "nestjs-docs": {
+    "database": {
       "status": "down",
-      "message": "Service unavailable"
+      "message": "Database connection failed"
     }
+  },
+  "details": {
+    "cashful-api": { "status": "up" },
+    "database": { "status": "down", "message": "Database connection failed" }
   }
 }
 ```

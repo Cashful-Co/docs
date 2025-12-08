@@ -1,0 +1,33 @@
+---
+title: Getting Started Overview
+description: A quick overview of the onboarding flow and recommended next steps for integrating with the Cashful API.
+---
+
+# Introduction
+
+Welcome to Cashful! This guide will help you quickly onboard merchants and start accepting payments. We recommend following the step-by-step tutorial that walks through account creation, organization setup, and initiating a checkout session.
+
+# Quick Start
+
+- Sign up and sign in to obtain a session token
+- Create an organization and set it as active for the session
+- Create customers and start checkout sessions or payment intents
+
+For a guided walkthrough, see the tutorial: [Onboard a Merchant](../tutorials/merchant-onboarding.mdx)
+
+# Authentication & Tokens
+
+Authenticate using `POST /authentication/sign-in/email` to retrieve a session token. Include the token in the `Authorization: Bearer {sessionToken}` header for all protected endpoints.
+
+# Recommended Next Steps
+
+1. Follow the `Onboard a Merchant` tutorial to get your first integration running.
+2. Implement webhooks to receive payment status updates and reconcile payments server-side.
+3. Add idempotency keys where needed to prevent duplicate requests.
+
+# More Tutorials
+
+- Create a Checkout Session — [Create a Checkout Session](../tutorials/create-a-checkout-session.mdx)
+- Manage Customers — [Manage Customers](../tutorials/manage-customers.mdx)
+
+If you want hands-on code examples (Node.js, Python, or curl), I can add code snippets to this overview or individual tutorials.

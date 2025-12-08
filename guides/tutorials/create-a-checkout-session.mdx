@@ -1,0 +1,16 @@
+---
+title: Create a Checkout Session
+description: How to create and redirect a customer to a checkout session.
+---
+
+# Introduction
+
+This tutorial shows how to create a server-side checkout session and redirect customers to the hosted session to complete payment.
+
+## Steps
+
+1. Ensure you have a signed-in session token.
+2. Create a `POST /checkout/sessions` request with `merchantId`, `customerId`, `lineItems`, and `currency`.
+3. Read the `sessionUrl` from the response and redirect your customer to that URL.
+
+See the `Onboard a Merchant` tutorial for a complete flow that includes checkout session creation.

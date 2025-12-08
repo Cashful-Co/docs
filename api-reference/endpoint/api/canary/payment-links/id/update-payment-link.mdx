@@ -1,0 +1,50 @@
+---
+title: "Update Payment Link"
+sidebarTitle: "Update Payment Link"
+description: "Update an existing payment link"
+api: "patch /api/canary/payment-links/{id}"
+---
+
+Update a payment link's details, typically used to set `active: false`.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  Payment link ID
+</ParamField>
+
+## Request Body
+
+<ParamField body="active" type="boolean">
+  Whether the link is active
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata to update
+</ParamField>
+
+## Response
+
+<ResponseField status="200" name="Payment Link Updated">
+  <ResponseField name="id" type="string">ID of the link</ResponseField>
+  <ResponseField name="active" type="boolean">If it is active</ResponseField>
+  <ResponseField name="updatedAt" type="string">Updated timestamp</ResponseField>
+</ResponseField>
+
+## Error Responses
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or validation error
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid authentication
+</ResponseField>
+
+<ResponseField status="404" name="Not Found">
+  Link not found
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

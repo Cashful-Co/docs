@@ -1,0 +1,41 @@
+---
+title: "List API Keys"
+sidebarTitle: "List API Keys"
+description: "List all API keys for the current user"
+api: "get /api/canary/authentication/api-key/list"
+---
+
+Retrieves a paginated list of API keys belonging to the current user or organization.
+
+## Query Parameters
+
+<ParamField query="page" type="number">
+  Page number
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Records per page
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="API keys listed successfully">
+  <ResponseField name="data" type="array">
+    List of API key objects
+  </ResponseField>
+  <ResponseField name="pagination" type="object">
+    Pagination info
+  </ResponseField>
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

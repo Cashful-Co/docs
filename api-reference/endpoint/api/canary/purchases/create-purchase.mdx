@@ -1,0 +1,59 @@
+---
+title: "Create Purchase"
+sidebarTitle: "Create Purchase"
+description: "Spend a customer's balance to purchase a product; debits customer balance and credits merchant account"
+api: "post /api/canary/purchases"
+---
+
+Use a customer's CustomerBalance as the source of funds to buy a product.
+
+## Request Body
+
+<ParamField body="customerId" type="string" required>
+  The ID of the customer making the purchase
+</ParamField>
+
+<ParamField body="productId" type="string" required>
+  The ID of the product being purchased
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  The amount in the smallest currency unit
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Three-letter ISO currency
+</ParamField>
+
+<ParamField body="quantity" type="number">
+  Optional quantity of items
+</ParamField>
+
+## Responses
+
+<ResponseField status="201" name="Purchase Created">
+  <ResponseField name="id" type="string">Purchase ID</ResponseField>
+  <ResponseField name="merchantId" type="string">Merchant ID</ResponseField>
+  <ResponseField name="customerId" type="string">Customer ID</ResponseField>
+  <ResponseField name="productId" type="string">Product ID</ResponseField>
+  <ResponseField name="amount" type="number">Amount charged</ResponseField>
+  <ResponseField name="currency" type="string">Currency code</ResponseField>
+  <ResponseField name="status" type="string">Purchase status</ResponseField>
+  <ResponseField name="createdAt" type="string">Created timestamp</ResponseField>
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or validation error
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid authentication
+</ResponseField>
+
+<ResponseField status="402" name="Insufficient Balance">
+  The customer has insufficient balance
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

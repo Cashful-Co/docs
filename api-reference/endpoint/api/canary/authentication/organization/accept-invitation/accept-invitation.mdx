@@ -1,0 +1,32 @@
+---
+title: "Accept Invitation"
+sidebarTitle: "Accept Invitation"
+description: "Accept an invitation to an organization"
+api: "post /api/canary/authentication/organization/accept-invitation"
+---
+
+Accept an invitation to join an organization. Requires the invitation token or relevant details.
+
+## Request Body
+
+<ParamField body="invitationId" type="string" required>
+  The ID of the invitation to accept
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="Invitation accepted successfully">
+  Confirmation of acceptance
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Missing or invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>

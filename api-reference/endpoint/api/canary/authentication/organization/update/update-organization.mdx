@@ -1,0 +1,40 @@
+---
+title: "Update Organization"
+sidebarTitle: "Update Organization"
+description: "Update an organization's details"
+api: "post /api/canary/authentication/organization/update"
+---
+
+Update the details of an organization. Requires authentication and proper permissions.
+
+## Request Body
+
+<ParamField body="organizationId" type="string" required>
+  The ID of the organization to update
+</ParamField>
+
+<ParamField body="name" type="string">
+  New name for the organization
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional org metadata
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="Organization updated successfully">
+  Updated organization object
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Missing or invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>

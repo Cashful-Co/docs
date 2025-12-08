@@ -1,0 +1,36 @@
+---
+title: "Delete API Key"
+sidebarTitle: "Delete API Key"
+description: "Delete an API key"
+api: "post /api/canary/authentication/api-key/delete"
+---
+
+Delete an API key by its ID to revoke access.
+
+## Request Body
+
+<ParamField body="keyId" type="string" required>
+  The ID of the API key to delete
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="API key deleted successfully">
+  A simple success confirmation message
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or validation error
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid or missing authentication token
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

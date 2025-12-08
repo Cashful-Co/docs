@@ -1,0 +1,56 @@
+---
+title: "Create Payout"
+sidebarTitle: "Create Payout"
+description: "Move funds from MerchantBalance to external bank account"
+api: "post /api/canary/payouts"
+---
+
+Initiate a payout from the merchant's MerchantBalance to a bank account.
+
+## Request Body
+
+<ParamField body="amount" type="number" required>
+  Amount in the smallest currency unit
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Three-letter ISO currency code
+</ParamField>
+
+<ParamField body="bankAccount" type="string" required>
+  The recipient bank account ID or number
+</ParamField>
+
+<ParamField body="description" type="string">
+  Optional payout description
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata
+</ParamField>
+
+## Responses
+
+<ResponseField status="201" name="Payout Created">
+  <ResponseField name="id" type="string">Payout ID</ResponseField>
+  <ResponseField name="amount" type="number">Amount paid</ResponseField>
+  <ResponseField name="currency" type="string">Currency code</ResponseField>
+  <ResponseField name="status" type="string">Payout status</ResponseField>
+  <ResponseField name="createdAt" type="string">Created timestamp</ResponseField>
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Amount exceeds available balance or invalid input
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid authentication
+</ResponseField>
+
+<ResponseField status="402" name="Insufficient Balance">
+  Insufficient merchant balance
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

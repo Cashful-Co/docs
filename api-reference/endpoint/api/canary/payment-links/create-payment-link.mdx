@@ -1,0 +1,67 @@
+---
+title: "Create Payment Link"
+sidebarTitle: "Create Payment Link"
+description: "Creates a re-usable hosted payment link"
+api: "post /api/canary/payment-links"
+---
+
+Create a reusable hosted payment link for merchants to accept payment for a product or top up a customer balance.
+
+## Request Body
+
+<ParamField body="productId" type="string">
+  Optional product associated with the link
+</ParamField>
+
+<ParamField body="customerId" type="string">
+  Optional customer to pre-fill for the link
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  The amount the link will request
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  3-letter ISO currency code
+</ParamField>
+
+<ParamField body="mode" type="string" required>
+  The payment mode (payment or subscription)
+</ParamField>
+
+<ParamField body="successUrl" type="string" required>
+  Redirect URL after success
+</ParamField>
+
+<ParamField body="cancelUrl" type="string" required>
+  Redirect URL if customer cancels
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata
+</ParamField>
+
+## Responses
+
+<ResponseField status="201" name="Payment Link Created">
+  <ResponseField name="id" type="string">ID of the payment link</ResponseField>
+  <ResponseField name="url" type="string">Public URL for the link</ResponseField>
+  <ResponseField name="active" type="boolean">If the link is active</ResponseField>
+  <ResponseField name="createdAt" type="string">Creation timestamp</ResponseField>
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or validation error
+</ResponseField>
+
+<ResponseField status="401" name="Unauthorized">
+  Invalid authentication
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred on the server
+</ResponseField>
+
+## Authentication
+
+This endpoint requires Bearer token authentication.

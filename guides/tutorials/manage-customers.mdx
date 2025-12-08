@@ -1,0 +1,21 @@
+---
+title: Manage Customers
+description: Best practices and examples for creating and managing customers in Cashful.
+---
+
+# Introduction
+
+This tutorial covers how to create, retrieve, and update customer records, which are needed for payment processing and storing payment methods.
+
+# Create Customer
+
+Use `POST /customers` to create a customer record. See the `Onboard a Merchant` tutorial for a concrete example.
+
+# Retrieve & Update
+
+Use existing `GET /customers/{customerId}` and `PATCH /customers/{customerId}` endpoints to retrieve and update customer information.
+
+# Best Practices
+
+- Attach metadata to customers for easier reconciliation (order IDs, source, etc.).
+- Use webhooks to track updates to saved payment methods or customer changes.

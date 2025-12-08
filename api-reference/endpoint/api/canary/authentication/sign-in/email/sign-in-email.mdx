@@ -1,0 +1,34 @@
+---
+title: "Sign in with Email"
+sidebarTitle: "Sign in (Email)"
+description: "Authenticate a user using email and password"
+api: "post /api/canary/authentication/sign-in/email"
+---
+
+Authenticate a user using email and password. Responds with session information and tokens.
+
+## Request Body
+
+<ParamField body="email" type="string" required>
+  User's email address
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  User's password
+</ParamField>
+
+## Responses
+
+<ResponseField status="200" name="User signed in successfully">
+  <ResponseField name="accessToken" type="string">JWT or bearer token</ResponseField>
+  <ResponseField name="refreshToken" type="string">Refresh token (if applicable)</ResponseField>
+  <ResponseField name="user" type="object">User object</ResponseField>
+</ResponseField>
+
+<ResponseField status="400" name="Bad Request">
+  Invalid input or missing fields
+</ResponseField>
+
+<ResponseField status="500" name="Internal Server Error">
+  An unexpected error occurred
+</ResponseField>
